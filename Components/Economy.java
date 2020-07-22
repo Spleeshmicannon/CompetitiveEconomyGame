@@ -2,39 +2,8 @@ package Components;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Economy {
-    public enum Resource {
-        food,
-        minerals,
-        technology,
-        medicine;
-
-        /**
-         * Pick a random resource value
-         * @return the random value in question
-         */
-        public static Resource getRandomResource() {
-            Random random = new Random();
-            return values()[random.nextInt(values().length)];
-        }
-
-        /**
-         * Pick a random resource value with an exclusion
-         * @param exclusion the excluded resource value
-         * @return the random value in question
-         */
-        public static Resource getRandomResource(Resource exclusion) {
-            Random random = new Random();
-            Resource result = null;
-            do {
-                result = values()[random.nextInt(values().length)];
-            } while(result == exclusion);
-            return result;
-        }
-    }
-
     private List<Resource> needs;
     private List<Resource> products;
     public double reliability;
