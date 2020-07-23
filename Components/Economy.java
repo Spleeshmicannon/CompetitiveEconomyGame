@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Economy {
-    private List<Resource> needs;
-    private List<Resource> products;
+    private List<Trade> needs;
+    private List<Trade> products;
     public double reliability;
     public double deficit;
 
@@ -15,8 +15,8 @@ public class Economy {
      * @param deficit the deficit value
      */
     public Economy(double reliability, double deficit) {
-        needs = new ArrayList<Resource>();
-        products = new ArrayList<Resource>();
+        needs = new ArrayList<Trade>();
+        products = new ArrayList<Trade>();
         this.reliability = reliability;
         this.deficit = deficit;
     }
@@ -26,7 +26,7 @@ public class Economy {
      * @param r the added resource
      */
     public void addNeed(Resource r) {
-        needs.add(r);
+        needs.add(new Trade(1, r));
     }
 
     /**
@@ -34,27 +34,34 @@ public class Economy {
      * @param r the added resource
      */
     public void addProduct(Resource r) {
-        products.add(r);
+        products.add(new Trade(1,r));
     }
 
     /**
      * returns the needs list
      * @return the needs list
      */
-    public Resource[] getNeeds() {
-        return needs.toArray(new Resource[0]);
+    public Trade[] getNeeds() {
+        return needs.toArray(new Trade[0]);
     }
 
     /**
      * returns the products list
      * @return the products list
      */
-    public Resource[] getProducts() {
-        return products.toArray(new Resource[0]);
+    public Trade[] getProducts() {
+        return products.toArray(new Trade[0]);
+    }
+
+    public void CycleEconomy() {
+        for(int i = 0; i < Math.max(needs.size(), products.size()); ++i) {
+            if(i <= needs.size()) ++needs.get(i).amount;
+            if(i <= needs.size()) ++products.get(i).amount;
+        }
     }
 
     public void BuyNeeds() {
-        // Todo: implement mechanic
+
     }
 
     public void SellProducts() {

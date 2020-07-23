@@ -25,7 +25,7 @@ public class Run {
     public static void CreateEconomy() {
         playEcon = new Economy(30, 1000);
         playEcon.addNeed(Resource.getRandomResource());
-        playEcon.addProduct(Resource.getRandomResource(playEcon.getNeeds()[0]));
+        playEcon.addProduct(Resource.getRandomResource(playEcon.getNeeds()[0].resource));
     }
 
     public static void CreateGui() {
@@ -36,10 +36,12 @@ public class Run {
         // adding window elements
         labels = new JLabel[]{ // creating various text elements
                 Gui.CreateText("Economy", WIDTH / 32, 40, 170, 80, 40),
-                Gui.CreateText("Needs:" + Resource.ResourceToString(playEcon.getNeeds()[0]), WIDTH / 32, 120, 170, 40, 20),
-                Gui.CreateText("Products:" + Resource.ResourceToString(playEcon.getProducts()[0]), WIDTH / 32, 160, 170, 40, 20),
-                Gui.CreateText("Deficit:" + playEcon.deficit, WIDTH / 32, 200, 170, 40, 20),
-                Gui.CreateText("Reliability:" + playEcon.reliability, WIDTH / 32, 240, 170, 40, 20)
+                Gui.CreateText("Needs:" + Resource.ResourceToString(playEcon.getNeeds()[0].resource), WIDTH / 32, 120, 170, 40, 20),
+                Gui.CreateText("Amount:" + playEcon.getNeeds()[0].amount, WIDTH / 32, 160, 170, 40, 20),
+                Gui.CreateText("Products:" + Resource.ResourceToString(playEcon.getProducts()[0].resource), WIDTH / 32, 200, 170, 40, 20),
+                Gui.CreateText("Amount:" + playEcon.getProducts()[0].amount, WIDTH / 32, 240, 170, 40, 20),
+                Gui.CreateText("Deficit:" + playEcon.deficit, WIDTH / 32, 280, 170, 40, 20),
+                Gui.CreateText("Reliability:" + playEcon.reliability, WIDTH / 32, 320, 170, 40, 20)
         };
 
         JButton[] btns = new JButton[] { // creating various buttons
@@ -62,7 +64,7 @@ public class Run {
     public static void CycleEconomy() {
         while(playEcon.deficit >= -100) {
             sleep(1000);
-            playEcon.deficit++;
+            playEcon.CycleEconomy();
             RefreshLabels();
         }
     }
@@ -76,9 +78,11 @@ public class Run {
     }
 
     public static void RefreshLabels() {
-        labels[1].setText("Needs:" + Resource.ResourceToString(playEcon.getNeeds()[0]));
-        labels[2].setText("Products:" + Resource.ResourceToString(playEcon.getProducts()[0]));
-        labels[3].setText("Deficit:" + playEcon.deficit);
-        labels[4].setText("Reliability:" + playEcon.reliability);
+        labels[1].setText("Needs:" + Resource.ResourceToString(playEcon.getNeeds()[0].resource));
+        labels[2].setText("Amount:" + playEcon.getNeeds()[0].amount);
+        labels[3].setText("Products:" + Resource.ResourceToString(playEcon.getProducts()[0].resource));
+        labels[4].setText("Amount:" + playEcon.getProducts()[0].amount);
+        labels[5].setText("Deficit:" + playEcon.deficit);
+        labels[6].setText("Reliability:" + playEcon.reliability);
     }
 }
