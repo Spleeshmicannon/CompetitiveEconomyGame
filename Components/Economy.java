@@ -53,26 +53,57 @@ public class Economy {
         return products.toArray(new Trade[0]);
     }
 
+    /**
+     * The periodic changes to the economy
+     */
     public void CycleEconomy() {
         for(int i = 0; i < Math.max(needs.size(), products.size()); ++i) {
             if(i <= needs.size()) ++needs.get(i).amount;
-            if(i <= needs.size()) ++products.get(i).amount;
+            if(i <= products.size()) ++products.get(i).amount;
         }
     }
 
-    public void BuyNeeds() {
-
+    /**
+     * Buying up everything the economy needs of said Resource.
+     * @param price the price of the resource
+     * @param r the resource
+     */
+    public void BuyNeeds(int price, Resource r) {
+        needs.forEach(T -> {
+            if(T.resource == r) {
+                deficit -= T.amount * (price/reliability);
+                T.amount = 0;
+            }
+        });
     }
 
-    public void SellProducts() {
-        // Todo: implement mechanic
+    /**
+     * Selling all of a resource the economy produces
+     * @param price the price of the resource
+     * @param r the resource
+     */
+    public void SellProducts(int price, Resource r) {
+        products.forEach(T -> {
+            if(T.resource == r) {
+                deficit += T.amount * (price/reliability);
+                T.amount = 0;
+            }
+        });
     }
 
+    /**
+     * Print 100 dollars and reduce reliability by 10 points.
+     */
     public void PrintMoney() {
-        // Todo: implement mechanic
+        deficit += 100;
+        reliability -= 10;
     }
 
+    /**
+     * Spend 100 dollars on an advertising campaign and increase reliability by 10.
+     */
     public void AdCampaign() {
-        // Todo: implement mechanic
+        deficit -= 100;
+        reliability += 10;
     }
 }

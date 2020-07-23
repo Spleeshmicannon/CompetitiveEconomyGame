@@ -44,15 +44,27 @@ public class Run {
                 Gui.CreateText("Reliability:" + playEcon.reliability, WIDTH / 32, 320, 170, 40, 20)
         };
 
+        String foodAmount;
+        String mineralsAmount;
+        String technologyAmount;
+        String medicineAmount;
+
+        JTable table = new JTable(new String[][]{
+                {"Needs Amounts"},
+                {"Products Amounts"}
+                }, new String[]{"","food", "minerals", "technology", "medicine"}
+        );
+        table.setBounds(WIDTH / 32, 160, 300, 120);
+
         JButton[] btns = new JButton[] { // creating various buttons
-                Gui.CreateButton("Buy Needs", WIDTH / 2, 80, 120, 50, e -> playEcon.BuyNeeds()),
-                Gui.CreateButton("Sell Products", WIDTH / 2, 80 + 53, 120, 50, e -> playEcon.SellProducts()),
+                Gui.CreateButton("Buy Needs", WIDTH / 2, 80, 120, 50, e -> playEcon.BuyNeeds(20, Resource.food)),
+                Gui.CreateButton("Sell Products", WIDTH / 2, 80 + 53, 120, 50, e -> playEcon.SellProducts(20, Resource.food)),
                 Gui.CreateButton("Print Money", WIDTH / 2, 80 + 53*2, 120, 50, e -> playEcon.PrintMoney()),
                 Gui.CreateButton("Ad Campaign", WIDTH / 2, 80 + 53*3, 120, 50, e -> playEcon.AdCampaign())
         };
 
-        for (JLabel label : labels) win.add(label); // adding the labels to the window
         for (JButton btn : btns) win.add(btn); // adding the buttons to the window
+        for (JLabel label : labels) win.add(label); // adding the labels to the window
         win.showScreen(); // showing all elements
     }
 
