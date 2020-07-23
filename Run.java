@@ -4,6 +4,7 @@ import Components.Network;
 import Components.Resource;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -24,8 +25,18 @@ public class Run {
 
     public static void CreateEconomy() {
         playEcon = new Economy(30, 1000);
-        playEcon.addNeed(Resource.getRandomResource());
-        playEcon.addProduct(Resource.getRandomResource(playEcon.getNeeds()[0].resource));
+        int[] needInts = fourRandomInts();
+        int[] productInts = fourRandomInts();
+        playEcon.addNeeds(productInts[0] >= needInts[0] ? needInts[0] : 0,
+                productInts[1] >= needInts[1] ? needInts[1] : 0,
+                productInts[2] >= needInts[2] ? needInts[2] : 0,
+                productInts[3] >= needInts[3] ? needInts[3] : 0
+        );
+        playEcon.addProducts(productInts[0] >= needInts[0] ? productInts[0] : 0,
+                productInts[1] >= needInts[1] ? productInts[1] : 0,
+                productInts[2] >= needInts[2] ? productInts[2] : 0,
+                productInts[3] >= needInts[3] ? productInts[3] : 0
+        );
     }
 
     public static void CreateGui() {
@@ -36,25 +47,25 @@ public class Run {
         // adding window elements
         labels = new JLabel[]{ // creating various text elements
                 Gui.CreateText("Economy", WIDTH / 32, 40, 170, 80, 40),
-                Gui.CreateText("Needs:" + Resource.ResourceToString(playEcon.getNeeds()[0].resource), WIDTH / 32, 120, 170, 40, 20),
-                Gui.CreateText("Amount:" + playEcon.getNeeds()[0].amount, WIDTH / 32, 160, 170, 40, 20),
-                Gui.CreateText("Products:" + Resource.ResourceToString(playEcon.getProducts()[0].resource), WIDTH / 32, 200, 170, 40, 20),
-                Gui.CreateText("Amount:" + playEcon.getProducts()[0].amount, WIDTH / 32, 240, 170, 40, 20),
                 Gui.CreateText("Deficit:" + playEcon.deficit, WIDTH / 32, 280, 170, 40, 20),
                 Gui.CreateText("Reliability:" + playEcon.reliability, WIDTH / 32, 320, 170, 40, 20)
         };
 
-        String foodAmount;
-        String mineralsAmount;
-        String technologyAmount;
-        String medicineAmount;
-
         JTable table = new JTable(new String[][]{
-                {"Needs Amounts"},
-                {"Products Amounts"}
+                {"Needs Amounts", Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.food)].amount),
+                        Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.minerals)].amount),
+                        Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.technology)].amount),
+                        Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.medicine)].amount)
+                },
+                {"Products Amounts", Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.food)].amount),
+                        Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.minerals)].amount),
+                        Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.technology)].amount),
+                        Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.medicine)].amount)
+                }
                 }, new String[]{"","food", "minerals", "technology", "medicine"}
         );
-        table.setBounds(WIDTH / 32, 160, 300, 120);
+
+        table.setBounds(WIDTH / 32, 140, 500, 140);
 
         JButton[] btns = new JButton[] { // creating various buttons
                 Gui.CreateButton("Buy Needs", WIDTH / 2, 80, 120, 50, e -> playEcon.BuyNeeds(20, Resource.food)),
@@ -65,6 +76,7 @@ public class Run {
 
         for (JButton btn : btns) win.add(btn); // adding the buttons to the window
         for (JLabel label : labels) win.add(label); // adding the labels to the window
+        win.add(table);
         win.showScreen(); // showing all elements
     }
 
@@ -90,11 +102,15 @@ public class Run {
     }
 
     public static void RefreshLabels() {
-        labels[1].setText("Needs:" + Resource.ResourceToString(playEcon.getNeeds()[0].resource));
-        labels[2].setText("Amount:" + playEcon.getNeeds()[0].amount);
-        labels[3].setText("Products:" + Resource.ResourceToString(playEcon.getProducts()[0].resource));
-        labels[4].setText("Amount:" + playEcon.getProducts()[0].amount);
-        labels[5].setText("Deficit:" + playEcon.deficit);
-        labels[6].setText("Reliability:" + playEcon.reliability);
+        labels[1].setText("Deficit:" + playEcon.deficit);
+        labels[2].setText("Reliability:" + playEcon.reliability);
+    }
+
+    public static int[] fourRandomInts() {
+        return new int[] {(int) Math.round(Math.random()*10),
+                (int) Math.round(Math.random()*10),
+                (int) Math.round(Math.random()*10),
+                (int) Math.round(Math.random()*10)
+        };
     }
 }

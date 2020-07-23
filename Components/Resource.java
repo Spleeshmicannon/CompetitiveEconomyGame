@@ -8,6 +8,26 @@ public enum Resource {
     technology,
     medicine;
 
+    /**
+     * Converts Resource to int
+     * @param r the Resource
+     * @return the int
+     */
+    public static int ResourceToInt(Resource r) {
+        switch(r) {
+            case food: return 0;
+            case minerals: return 1;
+            case technology: return 2;
+            case medicine: return 3;
+            default: return -1;
+        }
+    }
+
+    /**
+     * Converts Resource to String.
+     * @param r the Resource
+     * @return the String
+     */
     public static String ResourceToString(Resource r) {
         switch(r) {
             case food: return "food";

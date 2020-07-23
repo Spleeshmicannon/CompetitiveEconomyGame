@@ -22,19 +22,49 @@ public class Economy {
     }
 
     /**
-     * Adds a resource to the needs list
-     * @param r the added resource
+     * Sets up needs.
+     * @param foodAmount the amount of food
+     * @param medicineAmount the amount of medicine
+     * @param mineralAmount the amount of minerals
+     * @param technologyAmount the amount of technology
      */
-    public void addNeed(Resource r) {
-        needs.add(new Trade(1, r));
+    public void addNeeds(int foodAmount, int medicineAmount, int mineralAmount, int technologyAmount) {
+        needs.add(new Trade(foodAmount, Resource.food));
+        needs.add(new Trade(medicineAmount, Resource.medicine));
+        needs.add(new Trade(mineralAmount, Resource.minerals));
+        needs.add(new Trade(technologyAmount, Resource.technology));
     }
 
     /**
-     * Adds a resource to the products list
-     * @param r the added resource
+     * Setting the needs.
+     * @param index the index of the Resource
+     * @param amount the amount being set
      */
-    public void addProduct(Resource r) {
-        products.add(new Trade(1,r));
+    public void setNeeds(int index, int amount) {
+        needs.get(index).amount = amount;
+    }
+
+    /**
+     * Setting the products.
+     * @param index the index of the Resource
+     * @param amount the amount being set
+     */
+    public void setProducts(int index, int amount) {
+        needs.get(index).amount = amount;
+    }
+
+    /**
+     * Sets up products.
+     * @param foodAmount the amount of food
+     * @param medicineAmount the amount of medicine
+     * @param mineralAmount the amount of minerals
+     * @param technologyAmount the amount of technology
+     */
+    public void addProducts(int foodAmount, int medicineAmount, int mineralAmount, int technologyAmount) {
+        products.add(new Trade(foodAmount, Resource.food));
+        products.add(new Trade(medicineAmount, Resource.medicine));
+        products.add(new Trade(mineralAmount, Resource.minerals));
+        products.add(new Trade(technologyAmount, Resource.technology));
     }
 
     /**
@@ -58,8 +88,8 @@ public class Economy {
      */
     public void CycleEconomy() {
         for(int i = 0; i < Math.max(needs.size(), products.size()); ++i) {
-            if(i <= needs.size()) ++needs.get(i).amount;
-            if(i <= products.size()) ++products.get(i).amount;
+            if(i < needs.size()) ++needs.get(i).amount;
+            if(i < products.size()) ++products.get(i).amount;
         }
     }
 
