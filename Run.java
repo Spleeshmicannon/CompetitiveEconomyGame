@@ -4,6 +4,8 @@ import Components.Network;
 import Components.Resource;
 
 import javax.swing.*;
+import javax.swing.table.TableColumnModel;
+import javax.swing.text.TableView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,20 +54,36 @@ public class Run {
         };
 
         JTable table = new JTable(new String[][]{
-                {"Needs Amounts", Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.food)].amount),
-                        Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.minerals)].amount),
-                        Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.technology)].amount),
-                        Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.medicine)].amount)
+                {
+                    "Resource", "Needs", "Products"
                 },
-                {"Products Amounts", Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.food)].amount),
-                        Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.minerals)].amount),
-                        Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.technology)].amount),
+                {
+                    "food",
+                        Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.food)].amount),
+                        Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.food)].amount)
+                },
+                {
+                    "minerals",
+                        Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.minerals)].amount),
+                        Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.minerals)].amount)
+                },
+                {
+                    "technology",
+                        Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.technology)].amount),
+                        Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.technology)].amount)
+                },
+                {
+                    "medicine",
+                        Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.medicine)].amount),
                         Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.medicine)].amount)
                 }
-                }, new String[]{"","food", "minerals", "technology", "medicine"}
+                }, new String[]{" ","Needs", "Products",}
         );
 
-        table.setBounds(WIDTH / 32, 140, 500, 140);
+        table.setBounds(WIDTH / 32, 140, 300, 100);
+        table.setFont((new Font(table.getFont().getName(), Font.PLAIN, 20)));
+        table.setRowHeight(25);
+        setColumnWidths(table, 100, 100, 100, 100);
 
         JButton[] btns = new JButton[] { // creating various buttons
                 Gui.CreateButton("Buy Needs", WIDTH / 2, 80, 120, 50, e -> playEcon.BuyNeeds(20, Resource.food)),
@@ -78,6 +96,16 @@ public class Run {
         for (JLabel label : labels) win.add(label); // adding the labels to the window
         win.add(table);
         win.showScreen(); // showing all elements
+    }
+
+    public static void setColumnWidths(JTable table, int... widths) {
+        TableColumnModel columnModel = table.getColumnModel();
+        for (int i = 0; i < widths.length; i++) {
+            if (i < columnModel.getColumnCount()) {
+                columnModel.getColumn(i).setMaxWidth(widths[i]);
+            }
+            else break;
+        }
     }
 
     public static void CreateNetwork() {
