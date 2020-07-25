@@ -69,6 +69,7 @@ public class Gui {
     public static JButton CreateButton(String text, int x, int y, int width, int height, ActionListener ac) {
         JButton btn = new JButton(text);
         btn.setBounds(x,y,width,height);
+        btn.addActionListener(ac);
         return btn;
     }
 

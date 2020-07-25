@@ -101,7 +101,7 @@ public class Economy {
     public void BuyNeeds(int price, Resource r) {
         needs.forEach(T -> {
             if(T.resource == r) {
-                deficit -= T.amount * (price/reliability);
+                deficit -= T.amount * (price/(reliability/10));
                 T.amount = 0;
             }
         });
@@ -115,7 +115,7 @@ public class Economy {
     public void SellProducts(int price, Resource r) {
         products.forEach(T -> {
             if(T.resource == r) {
-                deficit += T.amount * (price/reliability);
+                deficit += T.amount * (price*(reliability/10));
                 T.amount = 0;
             }
         });

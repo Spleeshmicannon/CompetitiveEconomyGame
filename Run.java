@@ -4,7 +4,9 @@ import Components.Network;
 import Components.Resource;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import javax.swing.text.TableView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,6 +17,7 @@ public class Run {
     static Economy playEcon; // the players economy
     static Boolean Online; // are you playing online?
     static JLabel[] labels; // the text labels
+    static JTable table; // the table with the data
     final static int WIDTH = 1080; // the windows width
     final static int HEIGHT = 720; // the windows height
 
@@ -53,7 +56,7 @@ public class Run {
                 Gui.CreateText("Reliability:" + playEcon.reliability, WIDTH / 32, 320, 170, 40, 20)
         };
 
-        JTable table = new JTable(new String[][]{
+        table = new JTable(new String[][]{
                 {
                     "Resource", "Needs", "Products"
                 },
@@ -80,14 +83,14 @@ public class Run {
                 }, new String[]{" ","Needs", "Products",}
         );
 
-        table.setBounds(WIDTH / 32, 140, 300, 100);
+        table.setBounds(WIDTH / 32, 140, 300, 130);
         table.setFont((new Font(table.getFont().getName(), Font.PLAIN, 20)));
         table.setRowHeight(25);
         setColumnWidths(table, 100, 100, 100, 100);
 
         JButton[] btns = new JButton[] { // creating various buttons
-                Gui.CreateButton("Buy Needs", WIDTH / 2, 80, 120, 50, e -> playEcon.BuyNeeds(20, Resource.food)),
-                Gui.CreateButton("Sell Products", WIDTH / 2, 80 + 53, 120, 50, e -> playEcon.SellProducts(20, Resource.food)),
+                Gui.CreateButton("Buy Needs", WIDTH / 2, 80, 120, 50, e -> playEcon.BuyNeeds(60, Resource.food)),
+                Gui.CreateButton("Sell Products", WIDTH / 2, 80 + 53, 120, 50, e -> playEcon.SellProducts(60, Resource.food)),
                 Gui.CreateButton("Print Money", WIDTH / 2, 80 + 53*2, 120, 50, e -> playEcon.PrintMoney()),
                 Gui.CreateButton("Ad Campaign", WIDTH / 2, 80 + 53*3, 120, 50, e -> playEcon.AdCampaign())
         };
@@ -117,7 +120,7 @@ public class Run {
         while(playEcon.deficit >= -100) {
             sleep(1000);
             playEcon.CycleEconomy();
-            RefreshLabels();
+            RefreshGui();
         }
     }
 
@@ -129,9 +132,23 @@ public class Run {
         }
     }
 
-    public static void RefreshLabels() {
+    public static void RefreshGui() {
         labels[1].setText("Deficit:" + playEcon.deficit);
         labels[2].setText("Reliability:" + playEcon.reliability);
+
+        TableModel tableModel = table.getModel();
+
+        tableModel.setValueAt(Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.food)].amount), 1, 1);
+        tableModel.setValueAt(Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.minerals)].amount), 2, 1);
+        tableModel.setValueAt(Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.technology)].amount), 3, 1);
+        tableModel.setValueAt(Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.medicine)].amount), 4, 1);
+
+        tableModel.setValueAt(Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.food)].amount), 1, 2);
+        tableModel.setValueAt(Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.minerals)].amount), 2, 2);
+        tableModel.setValueAt(Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.technology)].amount), 3, 2);
+        tableModel.setValueAt(Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.medicine)].amount), 4, 2);
+
+        table.setModel(tableModel);
     }
 
     public static int[] fourRandomInts() {
