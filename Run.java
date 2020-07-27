@@ -73,14 +73,33 @@ public class Run {
                     Integer.toString(playEcon.getNeeds()[Resource.ResourceToInt(Resource.medicine)].amount),
                     Integer.toString(playEcon.getProducts()[Resource.ResourceToInt(Resource.medicine)].amount)
                 }
-                }, new String[]{" ", "Buy/Sell", "Needs", "Products",}
+                }, new String[]{" ", "Buy/Sell", "Needs", "Products"}
         );
 
         table.setFont((new Font(table.getFont().getName(), Font.PLAIN, 20)));
         table.setRowHeight(25);
         setColumnWidths(table, 200, 200, 100, 100, 100);
         table.getColumn("Buy/Sell").setCellRenderer(new TableButton.Renderer());
-        table.getColumn("Buy/Sell").setCellEditor(new TableButton.Editor(new JCheckBox(), e -> { }));
+        TableButton.Editor editor = new TableButton.Editor(new JCheckBox(), e -> { });
+        editor.addActionListner(e -> {
+            System.out.println(editor.rowNumber);
+            switch(editor.rowNumber) {
+                case 0:
+                    playEcon.BuyNeeds(60, Resource.food);
+                    break;
+                case 1:
+                    playEcon.BuyNeeds(60, Resource.minerals);
+                    break;
+                case 2:
+                    playEcon.BuyNeeds(60, Resource.technology);
+                    break;
+                case 3:
+                    playEcon.BuyNeeds(60, Resource.medicine);
+                    break;
+                default: break;
+            }
+        });
+        table.getColumn("Buy/Sell").setCellEditor(editor);
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(WIDTH / 32, 140, 400, 130);

@@ -3,7 +3,6 @@ package Components.Gui;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class TableButton {
@@ -37,12 +36,7 @@ public class TableButton {
             super(checkBox);
             button = new JButton();
             button.addActionListener(ac);
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    fireEditingStopped();
-                }
-            });
+            button.addActionListener(e -> fireEditingStopped());
         }
 
         /**
@@ -69,5 +63,10 @@ public class TableButton {
         public Object getCellEditorValue() {
             return button.getText();
         }
+
+        public void addActionListner(ActionListener ac) {
+            button.addActionListener(ac);
+        }
+
     }
 }
