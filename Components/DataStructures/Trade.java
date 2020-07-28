@@ -1,4 +1,6 @@
-package Components;
+package Components.DataStructures;
+
+import Components.DataStructures.Resource;
 
 public class Trade {
     public int amount;

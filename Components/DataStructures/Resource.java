@@ -1,4 +1,4 @@
-package Components;
+package Components.DataStructures;
 
 import java.util.Random;
 
