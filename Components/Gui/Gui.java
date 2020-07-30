@@ -4,9 +4,10 @@ import javax.swing.*;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
 public class Gui {
-    private Frame frame;
+    private JFrame frame;
 
     /**
      * the Gui constructor initialises the frame variable
@@ -14,10 +15,11 @@ public class Gui {
      * @param height the window height
      */
     public Gui(int width, int height) {
-        frame = new Frame();
+        frame = new JFrame();
         frame.setLayout(null);
         frame.setSize(width, height);
         frame.setBackground(Color.LIGHT_GRAY);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     /**
