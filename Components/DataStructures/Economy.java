@@ -70,14 +70,14 @@ public class Economy {
     public void CycleEconomy() {
         for(HashMap.Entry<Resource, Integer> entry : needs.entrySet()) {
             int temp;
-            if((temp = entry.getValue()) != 0) {
+            if((temp = entry.getValue()) != -1) {
                 entry.setValue(temp + 1);
             }
         }
 
         for(HashMap.Entry<Resource, Integer> entry : products.entrySet()) {
             int temp;
-            if((temp = entry.getValue()) != 0) {
+            if((temp = entry.getValue()) != -1) {
                 entry.setValue(temp + 1);
             }
         }

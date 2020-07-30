@@ -39,11 +39,11 @@ public class Run {
 
         // randomly chooses what needs/products the economy has
         if(new Random().nextBoolean()) {
-            playEcon.addNeeds(needInts[0], 0, needInts[2], 0);
-            playEcon.addProducts(0, needInts[1], 0, needInts[3]);
+            playEcon.addNeeds(needInts[0], -1, needInts[2], -1);
+            playEcon.addProducts(-1, needInts[1], -1, needInts[3]);
         } else {
-            playEcon.addNeeds(0, needInts[1], 0, needInts[3]);
-            playEcon.addProducts(needInts[0], 0, needInts[2], 0);
+            playEcon.addNeeds(-1, needInts[1], -1, needInts[3]);
+            playEcon.addProducts(needInts[0], -1, needInts[2], -1);
         }
     }
 
@@ -55,7 +55,7 @@ public class Run {
         win = new Gui(WIDTH,HEIGHT); // initialising the window
 
         // checking if the user wants to play online (0 if yes)
-        if(JOptionPane.showConfirmDialog(win.getFrame(),"Do you want to play online?") == 0) CreateNetwork();
+        //if(JOptionPane.showConfirmDialog(win.getFrame(),"Do you want to play online?") == 0) CreateNetwork();
 
         // adding window elements
         labels = new JLabel[]{ // creating various text elements
@@ -65,30 +65,31 @@ public class Run {
         };
 
         // creates the JTable, complete with data and column headings.
+        int temp;
         table = new JTable(new Object[][]{
             {
                 "Food",
                 "Buy/Sell",
-                Integer.toString(playEcon.getNeeds().get(Resource.food)),
-                Integer.toString(playEcon.getProducts().get(Resource.food)),
+                (temp = playEcon.getNeeds().get(Resource.food)) == -1 ? "" : temp ,
+                (temp = playEcon.getProducts().get(Resource.food)) == -1 ? "" : temp,
                 globalPrices.getGlobalPrices(Resource.food)
             }, {
                 "Minerals",
                 "Buy/Sell",
-                Integer.toString(playEcon.getNeeds().get(Resource.minerals)),
-                Integer.toString(playEcon.getProducts().get(Resource.minerals)),
+                (temp = playEcon.getNeeds().get(Resource.minerals)) == -1 ? "" : temp ,
+                (temp = playEcon.getProducts().get(Resource.minerals)) == -1 ? "" : temp,
                 globalPrices.getGlobalPrices(Resource.minerals)
             }, {
                 "Technology",
                 "Buy/Sell",
-                Integer.toString(playEcon.getNeeds().get(Resource.technology)),
-                Integer.toString(playEcon.getProducts().get(Resource.technology)),
+                (temp = playEcon.getNeeds().get(Resource.technology)) == -1 ? "" : temp ,
+                (temp = playEcon.getProducts().get(Resource.technology)) == -1 ? "" : temp,
                 globalPrices.getGlobalPrices(Resource.technology)
             }, {
                 "Medicine",
                 "Buy/Sell",
-                Integer.toString(playEcon.getNeeds().get(Resource.medicine)),
-                Integer.toString(playEcon.getProducts().get(Resource.medicine)),
+                (temp = playEcon.getNeeds().get(Resource.medicine)) == -1 ? "" : temp ,
+                (temp = playEcon.getProducts().get(Resource.medicine)) == -1 ? "" : temp,
                 globalPrices.getGlobalPrices(Resource.medicine)
                 }
             }, new String[]{" ", "Buy/Sell", "Needs", "Products", "Prices"}
@@ -102,31 +103,30 @@ public class Run {
         table.getColumn("Buy/Sell").setCellRenderer(new TableButton.Renderer()); // a button cell renderer
         TableButton.Editor editor = new TableButton.Editor(new JCheckBox(), e -> { }); // a placeholder editor values
         editor.addActionListner(e -> { // adding an action listener with the editor.rowNumber variable
-            System.out.println(editor.rowNumber);
             switch(editor.rowNumber) { // based on the row, what the buttons do
                 case 0:
-                    if(playEcon.getNeeds().get(Resource.food) == 0) {
+                    if(playEcon.getNeeds().get(Resource.food) != -1) {
                         playEcon.BuyNeeds(globalPrices.getGlobalPrices(Resource.food), Resource.food);
                     } else {
                         playEcon.SellProducts(globalPrices.getGlobalPrices(Resource.food), Resource.food);
                     }
                     break;
                 case 1:
-                    if(playEcon.getNeeds().get(Resource.minerals) == 0) {
+                    if(playEcon.getNeeds().get(Resource.minerals) != -1) {
                         playEcon.BuyNeeds(globalPrices.getGlobalPrices(Resource.minerals), Resource.minerals);
                     } else {
                         playEcon.SellProducts(globalPrices.getGlobalPrices(Resource.minerals), Resource.minerals);
                     }
                     break;
                 case 2:
-                    if(playEcon.getNeeds().get(Resource.technology) == 0) {
+                    if(playEcon.getNeeds().get(Resource.technology) != -1) {
                         playEcon.BuyNeeds(globalPrices.getGlobalPrices(Resource.technology), Resource.technology);
                     } else {
                         playEcon.SellProducts(globalPrices.getGlobalPrices(Resource.technology), Resource.technology);
                     }
                     break;
                 case 3:
-                    if(playEcon.getNeeds().get(Resource.medicine) == 0) {
+                    if(playEcon.getNeeds().get(Resource.medicine) != -1) {
                         playEcon.BuyNeeds(globalPrices.getGlobalPrices(Resource.medicine), Resource.medicine);
                     } else {
                         playEcon.SellProducts(globalPrices.getGlobalPrices(Resource.medicine), Resource.medicine);
@@ -185,22 +185,24 @@ public class Run {
      * Refreshes the GUI with new variable values.
      */
     public static void RefreshGui() {
+
         labels[1].setText("Deficit:" + playEcon.deficit); // updates Deficit variable
         labels[2].setText("Reliability:" + playEcon.reliability); // updates the reliability variable
 
         TableModel tableModel = table.getModel(); // makes an editable table model
+        int temp;
 
         // setting need values
-        tableModel.setValueAt(Integer.toString(playEcon.getNeeds().get(Resource.food)), 0, 2);
-        tableModel.setValueAt(Integer.toString(playEcon.getNeeds().get(Resource.minerals)), 1, 2);
-        tableModel.setValueAt(Integer.toString(playEcon.getNeeds().get(Resource.technology)), 2, 2);
-        tableModel.setValueAt(Integer.toString(playEcon.getNeeds().get(Resource.medicine)), 3, 2);
+        tableModel.setValueAt((temp = playEcon.getNeeds().get(Resource.food)) == -1 ? "" : temp, 0, 2);
+        tableModel.setValueAt((temp = playEcon.getNeeds().get(Resource.minerals)) == -1 ? "" : temp, 1, 2);
+        tableModel.setValueAt((temp = playEcon.getNeeds().get(Resource.technology)) == -1 ? "" : temp, 2, 2);
+        tableModel.setValueAt((temp = playEcon.getNeeds().get(Resource.medicine)) == -1 ? "" : temp, 3, 2);
 
         // setting product values
-        tableModel.setValueAt(Integer.toString(playEcon.getProducts().get(Resource.food)), 0, 3);
-        tableModel.setValueAt(Integer.toString(playEcon.getProducts().get(Resource.minerals)), 1, 3);
-        tableModel.setValueAt(Integer.toString(playEcon.getProducts().get(Resource.technology)), 2, 3);
-        tableModel.setValueAt(Integer.toString(playEcon.getProducts().get(Resource.medicine)), 3, 3);
+        tableModel.setValueAt((temp = playEcon.getProducts().get(Resource.food)) == -1 ? "" : temp, 0, 3);
+        tableModel.setValueAt((temp = playEcon.getProducts().get(Resource.minerals)) == -1 ? "" : temp, 1, 3);
+        tableModel.setValueAt((temp = playEcon.getProducts().get(Resource.technology)) == -1 ? "" : temp, 2, 3);
+        tableModel.setValueAt((temp = playEcon.getProducts().get(Resource.medicine)) == -1 ? "" : temp, 3, 3);
 
         // assigning model with updated values to the table
         table.setModel(tableModel);
