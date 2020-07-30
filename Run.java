@@ -134,6 +134,7 @@ public class Run {
                     break;
                 default: break;
             }
+            RefreshGui();
         });
         table.getColumn("Buy/Sell").setCellEditor(editor); // assigning the button editor to the table
 
@@ -142,8 +143,14 @@ public class Run {
         scrollPane.setBounds(WIDTH / 32, 140, 400, 130); // setting the location and size of the pane
 
         JButton[] btns = new JButton[] { // creating various buttons
-                Gui.CreateButton("Print Money", WIDTH / 2, 80 + 53*2, 120, 50, e -> playEcon.PrintMoney()),
-                Gui.CreateButton("Ad Campaign", WIDTH / 2, 80 + 53*3, 120, 50, e -> playEcon.AdCampaign())
+                Gui.CreateButton("Print Money", WIDTH / 2, 80 + 53*2, 120, 50, e -> {
+                    playEcon.PrintMoney();
+                    RefreshGui();
+                }),
+                Gui.CreateButton("Ad Campaign", WIDTH / 2, 80 + 53*3, 120, 50, e -> {
+                    playEcon.AdCampaign();
+                    RefreshGui();
+                })
         };
 
         for (JButton btn : btns) win.add(btn); // adding the buttons to the window
