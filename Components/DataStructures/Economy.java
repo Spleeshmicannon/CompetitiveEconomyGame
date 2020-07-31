@@ -5,6 +5,8 @@ import java.util.HashMap;
 public class Economy {
     private HashMap<Resource, Integer> needs;
     private HashMap<Resource, Integer> products;
+    private HashMap<SocialClass, Integer> people;
+    public int Health;
     public double reliability;
     public double deficit;
 
@@ -16,6 +18,8 @@ public class Economy {
     public Economy(double reliability, double deficit) {
         needs = new HashMap<>();
         products = new HashMap<>();
+        people = new HashMap<>();
+        Health = 100;
         this.reliability = reliability;
         this.deficit = deficit;
     }
@@ -49,6 +53,27 @@ public class Economy {
     }
 
     /**
+     * Adds default values for people.
+     */
+    public void addPeople() {
+        people.put(SocialClass.Royalty, 1);
+        people.put(SocialClass.Aristocrat, 10);
+        people.put(SocialClass.Proletariat, 100);
+    }
+
+    /**
+     * Adds specific values for people.
+     * @param royaltyAmount the amount of royalty people
+     * @param aristocracyAmount the amount of aristocrats
+     * @param proletariatAmount the amount of workers
+     */
+    public void addPeople(int royaltyAmount, int aristocracyAmount, int proletariatAmount) {
+        people.put(SocialClass.Royalty, royaltyAmount);
+        people.put(SocialClass.Aristocrat, aristocracyAmount);
+        people.put(SocialClass.Proletariat, proletariatAmount);
+    }
+
+    /**
      * returns the needs HashMap
      * @return the needs HashMap
      */
@@ -62,6 +87,15 @@ public class Economy {
      */
     public HashMap<Resource, Integer> getProducts() {
         return products;
+    }
+
+    /**
+     * Gets the amount of people in a class.
+     * @param sc the class in question
+     * @return the amount of people in said class
+     */
+    public int getPeopleInClass(SocialClass sc) {
+        return people.get(sc);
     }
 
     /**
@@ -79,6 +113,23 @@ public class Economy {
             int temp;
             if((temp = entry.getValue()) != -1) {
                 entry.setValue(temp + 1);
+                if(SocialClass.resourceToClass(entry.getKey()) == SocialClass.Aristocrat) {
+                    people.replace(SocialClass.Aristocrat, people.get(SocialClass.Aristocrat) + 1);
+                } else if (SocialClass.resourceToClass(entry.getKey()) == SocialClass.Proletariat) {
+                    people.replace(SocialClass.Proletariat, people.get(SocialClass.Proletariat) + 1);
+                }
+            }
+        }
+
+        if(needs.get(Resource.food) != -1) {
+            if(needs.get(Resource.food) > people.get(SocialClass.Royalty)*100) {
+                Health -= (people.get(SocialClass.Proletariat)/100) - 1;
+                people.replace(SocialClass.Proletariat, people.get(SocialClass.Proletariat) - 1);
+            }
+        } else {
+            if(needs.get(Resource.medicine) > people.get(SocialClass.Royalty)*100) {
+                Health -= (people.get(SocialClass.Aristocrat)/10) - 1;
+                people.replace(SocialClass.Aristocrat, people.get(SocialClass.Aristocrat) - 1);
             }
         }
     }
@@ -99,7 +150,7 @@ public class Economy {
      * @param r the resource
      */
     public void SellProducts(int price, Resource r) {
-        deficit += products.get(r) * price;
+        deficit += products.get(r) * (price + reliability + getPeopleInClass(SocialClass.resourceToClass(r)));
         products.replace(r, 0);
     }
 

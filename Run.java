@@ -34,6 +34,9 @@ public class Run {
         // initialises the economy with a reliability of 30 and deficit of 1000
         playEcon = new Economy(30, 1000);
 
+        // initialises class populations
+        playEcon.addPeople();
+
         // gets 4 random ints
         int[] needInts = fourRandomInts();
 
@@ -59,9 +62,13 @@ public class Run {
 
         // adding window elements
         labels = new JLabel[]{ // creating various text elements
-                Gui.CreateText("Economy", WIDTH / 32, 40, 170, 80, 40),
+                Gui.CreateText(Country.getCountryString(Country.getRandomCountry()), WIDTH / 32, 40, 650, 80, 40),
                 Gui.CreateText("Deficit:" + playEcon.deficit, WIDTH / 32, 280, 170, 40, 20),
-                Gui.CreateText("Reliability:" + playEcon.reliability, WIDTH / 32, 320, 170, 40, 20)
+                Gui.CreateText("Reliability:" + playEcon.reliability, WIDTH / 32, 320, 170, 40, 20),
+                Gui.CreateText("Health:" + playEcon.Health, WIDTH / 32, 360, 170, 40, 20),
+                Gui.CreateText("Royalty:" + playEcon.getPeopleInClass(SocialClass.Royalty), WIDTH / 32, 400, 170, 40, 20),
+                Gui.CreateText("Aristocracy:" + playEcon.getPeopleInClass(SocialClass.Aristocrat), WIDTH / 32, 440, 170, 40, 20),
+                Gui.CreateText("Proletariat:" + playEcon.getPeopleInClass(SocialClass.Proletariat), WIDTH / 32, 480, 170, 40, 20)
         };
 
         // creates the JTable, complete with data and column headings.
@@ -189,14 +196,16 @@ public class Run {
      * Cycles through the economy once every second.
      */
     public static void CycleEconomy() {
-        while(playEcon.deficit >= -100) {
+        while(playEcon.deficit >= -100 || playEcon.Health <= 0) {
             sleep(1000); // sleep for one second
             playEcon.CycleEconomy(); // cycles through the economy (i.e. changing various values)
             globalPrices.CyclePrices(); // changes the prices incrementally and randomly
             RefreshGui(); // refreshing the GUI with the new values that were assigned
         }
 
-        if(playEcon.deficit <= -100) { // if the while loop finished because of the deficit, tell the player they lost
+        // some stuff may happen here
+
+        if(playEcon.deficit <= -100 || playEcon.Health <= 0) { // if the while loop finished because of the deficit, tell the player they lost
             JOptionPane.showMessageDialog(win.getFrame(),"You lost");
         }
     }
@@ -208,6 +217,11 @@ public class Run {
 
         labels[1].setText("Deficit:" + playEcon.deficit); // updates Deficit variable
         labels[2].setText("Reliability:" + playEcon.reliability); // updates the reliability variable
+        labels[3].setText("Health:" + playEcon.Health); // updates the health variable
+        labels[4].setText("Royalty:" + playEcon.getPeopleInClass(SocialClass.Royalty)); // updates the royalty variable
+        labels[5].setText("Aristocracy:" + playEcon.getPeopleInClass(SocialClass.Aristocrat)); // updates the aristocracy variable
+        labels[6].setText("Proletariat:" + playEcon.getPeopleInClass(SocialClass.Proletariat)); // update the proletariat variable
+
 
         TableModel tableModel = table.getModel(); // makes an editable table model
         int temp;
