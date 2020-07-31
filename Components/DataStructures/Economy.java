@@ -89,8 +89,8 @@ public class Economy {
      * @param r the resource
      */
     public void BuyNeeds(int price, Resource r) {
+        deficit -= needs.get(r) * price;
         needs.replace(r, 0);
-        deficit -= price;
     }
 
     /**
@@ -99,8 +99,8 @@ public class Economy {
      * @param r the resource
      */
     public void SellProducts(int price, Resource r) {
+        deficit += products.get(r) * price;
         products.replace(r, 0);
-        deficit += price;
     }
 
     /**

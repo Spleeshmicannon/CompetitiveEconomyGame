@@ -49,7 +49,22 @@ public class GlobalPrices {
         return globalPrices.get(r);
     }
 
+    /**
+     * Changes the price of 'r' based on 'value'.
+     * @param r the resource that's price is changing
+     * @param value the amount it changes by
+     */
+    public void incrementPrice(Resource r, int value) {
+        globalPrices.replace(r, globalPrices.get(r) + value);
+    }
+
+    /**
+     * Randomly increments/decrements the prices.
+     */
     public void CyclePrices() {
-        // TODO: implement price change cycle
+        globalPrices.replace(Resource.food, globalPrices.get(Resource.food) + new Random().nextInt(12) - 3);
+        globalPrices.replace(Resource.minerals, globalPrices.get(Resource.minerals) + new Random().nextInt(12) - 3);
+        globalPrices.replace(Resource.technology, globalPrices.get(Resource.technology) + new Random().nextInt(12) - 3);
+        globalPrices.replace(Resource.medicine, globalPrices.get(Resource.medicine) + new Random().nextInt(12) - 3);
     }
 }

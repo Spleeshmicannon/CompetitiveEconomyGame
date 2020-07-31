@@ -55,7 +55,7 @@ public class Run {
         win = new Gui(WIDTH,HEIGHT); // initialising the window
 
         // checking if the user wants to play online (0 if yes)
-        //if(JOptionPane.showConfirmDialog(win.getFrame(),"Do you want to play online?") == 0) CreateNetwork();
+        //TODO Implementation: if(JOptionPane.showConfirmDialog(win.getFrame(),"Do you want to play online?") == 0) CreateNetwork();
 
         // adding window elements
         labels = new JLabel[]{ // creating various text elements
@@ -106,29 +106,37 @@ public class Run {
             switch(editor.rowNumber) { // based on the row, what the buttons do
                 case 0:
                     if(playEcon.getNeeds().get(Resource.food) != -1) {
+                        globalPrices.incrementPrice(Resource.food, playEcon.getNeeds().get(Resource.food));
                         playEcon.BuyNeeds(globalPrices.getGlobalPrices(Resource.food), Resource.food);
                     } else {
+                        globalPrices.incrementPrice(Resource.food, playEcon.getProducts().get(Resource.food)*-1);
                         playEcon.SellProducts(globalPrices.getGlobalPrices(Resource.food), Resource.food);
                     }
                     break;
                 case 1:
                     if(playEcon.getNeeds().get(Resource.minerals) != -1) {
+                        globalPrices.incrementPrice(Resource.minerals, playEcon.getNeeds().get(Resource.minerals));
                         playEcon.BuyNeeds(globalPrices.getGlobalPrices(Resource.minerals), Resource.minerals);
                     } else {
+                        globalPrices.incrementPrice(Resource.minerals, playEcon.getProducts().get(Resource.minerals)*-1);
                         playEcon.SellProducts(globalPrices.getGlobalPrices(Resource.minerals), Resource.minerals);
                     }
                     break;
                 case 2:
                     if(playEcon.getNeeds().get(Resource.technology) != -1) {
+                        globalPrices.incrementPrice(Resource.technology, playEcon.getNeeds().get(Resource.technology));
                         playEcon.BuyNeeds(globalPrices.getGlobalPrices(Resource.technology), Resource.technology);
                     } else {
+                        globalPrices.incrementPrice(Resource.technology, playEcon.getProducts().get(Resource.technology)*-1);
                         playEcon.SellProducts(globalPrices.getGlobalPrices(Resource.technology), Resource.technology);
                     }
                     break;
                 case 3:
                     if(playEcon.getNeeds().get(Resource.medicine) != -1) {
+                        globalPrices.incrementPrice(Resource.medicine, playEcon.getNeeds().get(Resource.medicine));
                         playEcon.BuyNeeds(globalPrices.getGlobalPrices(Resource.medicine), Resource.medicine);
                     } else {
+                        globalPrices.incrementPrice(Resource.medicine, playEcon.getProducts().get(Resource.medicine)*-1);
                         playEcon.SellProducts(globalPrices.getGlobalPrices(Resource.medicine), Resource.medicine);
                     }
                     break;
@@ -184,7 +192,12 @@ public class Run {
         while(playEcon.deficit >= -100) {
             sleep(1000); // sleep for one second
             playEcon.CycleEconomy(); // cycles through the economy (i.e. changing various values)
+            globalPrices.CyclePrices(); // changes the prices incrementally and randomly
             RefreshGui(); // refreshing the GUI with the new values that were assigned
+        }
+
+        if(playEcon.deficit <= -100) { // if the while loop finished because of the deficit, tell the player they lost
+            JOptionPane.showMessageDialog(win.getFrame(),"You lost");
         }
     }
 
@@ -210,6 +223,12 @@ public class Run {
         tableModel.setValueAt((temp = playEcon.getProducts().get(Resource.minerals)) == -1 ? "" : temp, 1, 3);
         tableModel.setValueAt((temp = playEcon.getProducts().get(Resource.technology)) == -1 ? "" : temp, 2, 3);
         tableModel.setValueAt((temp = playEcon.getProducts().get(Resource.medicine)) == -1 ? "" : temp, 3, 3);
+
+        // setting price values
+        tableModel.setValueAt(globalPrices.getGlobalPrices(Resource.food), 0, 4);
+        tableModel.setValueAt(globalPrices.getGlobalPrices(Resource.minerals), 1, 4);
+        tableModel.setValueAt(globalPrices.getGlobalPrices(Resource.technology), 2, 4);
+        tableModel.setValueAt(globalPrices.getGlobalPrices(Resource.medicine), 3, 4);
 
         // assigning model with updated values to the table
         table.setModel(tableModel);
