@@ -6,6 +6,7 @@ public class Economy {
     private HashMap<Resource, Integer> needs;
     private HashMap<Resource, Integer> products;
     private HashMap<SocialClass, Integer> people;
+    private HashMap<SocialClass, Integer> tax;
     public int Health;
     public double reliability;
     public double deficit;
@@ -19,7 +20,10 @@ public class Economy {
         needs = new HashMap<>();
         products = new HashMap<>();
         people = new HashMap<>();
+        tax = new HashMap<>();
+
         Health = 100;
+
         this.reliability = reliability;
         this.deficit = deficit;
     }

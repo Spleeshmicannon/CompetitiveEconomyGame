@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 
 public class Gui {
     private JFrame frame;
+    private JTabbedPane tabMenu;
 
     /**
      * the Gui constructor initialises the frame variable
@@ -57,6 +58,28 @@ public class Gui {
      */
     public void showScreen() {
         frame.setVisible(true);
+    }
+
+    /**
+     * Initialises the tab menu.
+     * @param x the x location
+     * @param y the y location
+     * @param width the width of menu
+     * @param height the height of menu
+     */
+    public void setupTabMenu(int x, int y, int width, int height) {
+        tabMenu = new JTabbedPane();
+        tabMenu.setBounds(x,y,width,height);
+        frame.add(tabMenu);
+    }
+
+    /**
+     * Adds a tab to the menu.
+     * @param title the title of the pane
+     * @param panel the panel to be added to said pane
+     */
+    public void addPane(String title, JPanel panel) {
+        tabMenu.addTab(title, panel);
     }
 
     /**

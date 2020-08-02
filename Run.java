@@ -50,7 +50,6 @@ public class Run {
         }
     }
 
-
     /**
      * Initialises the GUI with the variable named win (and the Gui object).
      */
@@ -60,7 +59,54 @@ public class Run {
         // checking if the user wants to play online (0 if yes)
         //TODO Implementation: if(JOptionPane.showConfirmDialog(win.getFrame(),"Do you want to play online?") == 0) CreateNetwork();
 
-        // adding window elements
+        initLabels(); // setting up the 'labels' variable
+        initTable(); // setting up the 'table' variable
+
+        // assigning the table to a JScrollPane
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(WIDTH / 32, 140, 400, 130); // setting the location and size of the pane
+
+        initTabMenu(); // setting up the tabbed menu
+
+        JButton[] btns = new JButton[] { // creating various buttons
+                Gui.CreateButton("Print Money", WIDTH / 14 + 100, 280, 120, 35, e -> {
+                    playEcon.PrintMoney();
+                    RefreshGui();
+                }),
+                Gui.CreateButton("Ad Campaign", WIDTH / 14 + 100, 320, 120, 35, e -> {
+                    playEcon.AdCampaign();
+                    RefreshGui();
+                })
+        };
+
+        for (JButton btn : btns) win.add(btn); // adding the buttons to the window
+        for (JLabel label : labels) win.add(label); // adding the labels to the window
+        win.add(scrollPane); // adding the scrollPane (with the table) to the window
+        win.showScreen(); // showing all elements
+    }
+
+    /**
+     * Initialises the network whether that's from a hosting or connecting standpoint.
+     * TODO: To be implemented
+     */
+    public static void CreateNetwork() {
+        Online = true;
+        net = new Network(true);
+    }
+
+    /**
+     * Sets up the global market for online/offline play.
+     * TODO: Implement online stuff
+     */
+    public static void SetupGlobalMarket() {
+        globalPrices = new GlobalPrices();
+        globalPrices.setGlobalPrices();
+    }
+
+    /**
+     * Initialises the table.
+     */
+    public static void initLabels() {
         labels = new JLabel[]{ // creating various text elements
                 Gui.CreateText(Country.getCountryString(Country.getRandomCountry()), WIDTH / 32, 40, 650, 80, 40),
                 Gui.CreateText("Deficit:" + playEcon.deficit, WIDTH / 32, 280, 170, 40, 20),
@@ -70,41 +116,46 @@ public class Run {
                 Gui.CreateText("Aristocracy:" + playEcon.getPeopleInClass(SocialClass.Aristocrat), WIDTH / 32, 440, 170, 40, 20),
                 Gui.CreateText("Proletariat:" + playEcon.getPeopleInClass(SocialClass.Proletariat), WIDTH / 32, 480, 170, 40, 20)
         };
+    }
 
+    /**
+     * Initialises the table.
+     */
+    public static void initTable() {
         // creates the JTable, complete with data and column headings.
         int temp;
         table = new JTable(new Object[][]{
-            {
+        {
                 "Food",
                 "Buy/Sell",
                 (temp = playEcon.getNeeds().get(Resource.food)) == -1 ? "" : temp ,
                 (temp = playEcon.getProducts().get(Resource.food)) == -1 ? "" : temp,
                 globalPrices.getGlobalPrices(Resource.food)
-            }, {
+        }, {
                 "Minerals",
                 "Buy/Sell",
                 (temp = playEcon.getNeeds().get(Resource.minerals)) == -1 ? "" : temp ,
                 (temp = playEcon.getProducts().get(Resource.minerals)) == -1 ? "" : temp,
                 globalPrices.getGlobalPrices(Resource.minerals)
-            }, {
+        }, {
                 "Technology",
                 "Buy/Sell",
                 (temp = playEcon.getNeeds().get(Resource.technology)) == -1 ? "" : temp ,
                 (temp = playEcon.getProducts().get(Resource.technology)) == -1 ? "" : temp,
                 globalPrices.getGlobalPrices(Resource.technology)
-            }, {
+        }, {
                 "Medicine",
                 "Buy/Sell",
                 (temp = playEcon.getNeeds().get(Resource.medicine)) == -1 ? "" : temp ,
                 (temp = playEcon.getProducts().get(Resource.medicine)) == -1 ? "" : temp,
                 globalPrices.getGlobalPrices(Resource.medicine)
-                }
-            }, new String[]{" ", "Buy/Sell", "Needs", "Products", "Prices"}
+        }
+        }, new String[]{" ", "Buy/Sell", "Needs", "Products", "Prices"}
         );
 
         table.setFont((new Font(table.getFont().getName(), Font.PLAIN, 20))); // sets the text size
         table.setRowHeight(25); // sets the height of each cell
-        setTableColumnWidths(table, 200, 200, 100, 100, 100, 100); // sets the width of each cell
+        setTableColumnWidths(table, 300, 150, 60, 60, 60); // sets the width of each cell
 
         // for rendering buttons, note that this is only for the 'Buy/Sell' column
         table.getColumn("Buy/Sell").setCellRenderer(new TableButton.Renderer()); // a button cell renderer
@@ -152,44 +203,17 @@ public class Run {
             RefreshGui();
         });
         table.getColumn("Buy/Sell").setCellEditor(editor); // assigning the button editor to the table
-
-        // assigning the table to a JScrollPane
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(WIDTH / 32, 140, 400, 130); // setting the location and size of the pane
-
-        JButton[] btns = new JButton[] { // creating various buttons
-                Gui.CreateButton("Print Money", WIDTH / 2, 80 + 53*2, 120, 50, e -> {
-                    playEcon.PrintMoney();
-                    RefreshGui();
-                }),
-                Gui.CreateButton("Ad Campaign", WIDTH / 2, 80 + 53*3, 120, 50, e -> {
-                    playEcon.AdCampaign();
-                    RefreshGui();
-                })
-        };
-
-        for (JButton btn : btns) win.add(btn); // adding the buttons to the window
-        for (JLabel label : labels) win.add(label); // adding the labels to the window
-        win.add(scrollPane); // adding the scrollPane (with the table) to the window
-        win.showScreen(); // showing all elements
     }
 
     /**
-     * Initialises the network whether that's from a hosting or connecting standpoint.
-     * TODO: To be implemented
+     * Initialises the tabbed menu
      */
-    public static void CreateNetwork() {
-        Online = true;
-        net = new Network(true);
-    }
-
-    /**
-     * Sets up the global market for online/offline play.
-     * TODO: Implement online stuff
-     */
-    public static void SetupGlobalMarket() {
-        globalPrices = new GlobalPrices();
-        globalPrices.setGlobalPrices();
+    public static void initTabMenu() {
+        win.setupTabMenu(WIDTH / 2 - 50, 140, 550, 500);
+        win.addPane("Politics", new JPanel());
+        win.addPane("Production", new JPanel());
+        win.addPane("Military", new JPanel());
+        win.addPane("Local Economy", new JPanel());
     }
 
     /**
@@ -209,6 +233,7 @@ public class Run {
             JOptionPane.showMessageDialog(win.getFrame(),"You lost");
         }
     }
+
 
     /**
      * Refreshes the GUI with new variable values.
