@@ -3,6 +3,9 @@ import Components.DataStructures.*;
 import Components.Gui.*;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.plaf.TableHeaderUI;
+import javax.swing.plaf.metal.MetalBorders;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
@@ -155,12 +158,21 @@ public class Run {
         }, new String[]{" ", "Buy/Sell", "Needs", "Products", "Prices"}
         );
 
-        table.setFont((new Font(table.getFont().getName(), Font.PLAIN, 20))); // sets the text size
         table.setRowHeight(25); // sets the height of each cell
         setTableColumnWidths(table, 300, 150, 60, 60, 60); // sets the width of each cell
 
+        // setting colours for the headers/footers
+        table.getTableHeader().setBackground(new Color(29, 29, 25));
+        table.getTableHeader().setForeground(new Color(255, 255, 219));
+        table.getTableHeader().setBorder(MetalBorders.getTextBorder());
+        table.setGridColor(Color.BLACK); // sets the grid colour for the inside of the table
+
         // for rendering buttons, note that this is only for the 'Buy/Sell' column
         table.getColumn("Buy/Sell").setCellRenderer(new TableButton.Renderer()); // a button cell renderer
+        table.getColumn(" ").setCellRenderer(new CustomTableColor.Renderer());
+        table.getColumn("Needs").setCellRenderer(new CustomTableColor.Renderer());
+        table.getColumn("Products").setCellRenderer(new CustomTableColor.Renderer());
+        table.getColumn("Prices").setCellRenderer(new CustomTableColor.Renderer());
         TableButton.Editor editor = new TableButton.Editor(new JCheckBox(), e -> { }); // a placeholder editor values
         editor.addActionListner(e -> { // adding an action listener with the editor.rowNumber variable
             switch(editor.rowNumber) { // based on the row, what the buttons do

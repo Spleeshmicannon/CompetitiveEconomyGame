@@ -14,6 +14,7 @@ public class TableButton {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             setText(value.toString());
+            setBackground(new Color(240, 240, 210));
             return this;
         }
     }
