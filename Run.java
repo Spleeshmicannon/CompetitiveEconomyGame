@@ -6,6 +6,8 @@ import javax.swing.*;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class Run {
@@ -210,10 +212,31 @@ public class Run {
      */
     public static void initTabMenu() {
         win.setupTabMenu(WIDTH / 2 - 50, 140, 550, 500);
-        win.addPane("Politics", new JPanel());
-        win.addPane("Production", new JPanel());
-        win.addPane("Military", new JPanel());
-        win.addPane("Local Economy", new JPanel());
+
+        TabPanel politicsPanel = new TabPanel();
+        PieChart governmentChart = new PieChart(Map.of(
+                Color.BLUE, 50D,
+                Color.RED, 20D,
+                Color.GREEN, 5D,
+                Color.CYAN, 25D
+        ));
+
+        governmentChart.setBounds(50, 50, 100, 100);
+        governmentChart.finaliseSize();
+
+        politicsPanel.addComponents(
+            governmentChart
+        );
+
+        TabPanel productionPanel = new TabPanel();
+        TabPanel militaryPanel = new TabPanel();
+        TabPanel economyPanel = new TabPanel();
+
+
+        win.addPane("Politics", politicsPanel);
+        win.addPane("Production", productionPanel);
+        win.addPane("Military", militaryPanel);
+        win.addPane("Local Economy", economyPanel);
     }
 
     /**
