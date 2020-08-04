@@ -1,15 +1,14 @@
+import Components.DataStructures.Enums.Country;
+import Components.DataStructures.Enums.Resource;
+import Components.DataStructures.Enums.SocialClass;
 import Components.Network;
 import Components.DataStructures.*;
 import Components.Gui.*;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.plaf.TableHeaderUI;
-import javax.swing.plaf.metal.MetalBorders;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -161,11 +160,6 @@ public class Run {
         table.setRowHeight(25); // sets the height of each cell
         setTableColumnWidths(table, 300, 150, 60, 60, 60); // sets the width of each cell
 
-        // setting colours for the headers/footers
-        table.getTableHeader().setBackground(new Color(29, 29, 25));
-        table.getTableHeader().setForeground(new Color(255, 255, 219));
-        table.getTableHeader().setBorder(MetalBorders.getTextBorder());
-        table.setGridColor(Color.BLACK); // sets the grid colour for the inside of the table
 
         // for rendering buttons, note that this is only for the 'Buy/Sell' column
         table.getColumn("Buy/Sell").setCellRenderer(new TableButton.Renderer()); // a button cell renderer
@@ -227,13 +221,13 @@ public class Run {
 
         TabPanel politicsPanel = new TabPanel();
         PieChart governmentChart = new PieChart(Map.of(
-                Color.BLUE, 50D,
-                Color.RED, 20D,
-                Color.GREEN, 5D,
-                Color.CYAN, 25D
+                new Color(65, 85, 128), 50D,
+                new Color(73, 127, 67), 20D,
+                new Color(76, 130, 134), 5D,
+                new Color(142, 64, 60), 25D
         ));
 
-        governmentChart.setBounds(50, 50, 100, 100);
+        governmentChart.setBounds(10, 20, 500, 500);
         governmentChart.finaliseSize();
 
         politicsPanel.addComponents(
@@ -245,10 +239,10 @@ public class Run {
         TabPanel economyPanel = new TabPanel();
 
 
-        win.addPane("Politics", politicsPanel);
-        win.addPane("Production", productionPanel);
-        win.addPane("Military", militaryPanel);
-        win.addPane("Local Economy", economyPanel);
+        win.addPane("Politics", politicsPanel, new Color(255, 255, 219));
+        win.addPane("Production", productionPanel, new Color(255, 255, 219));
+        win.addPane("Military", militaryPanel, new Color(255, 255, 219));
+        win.addPane("Local Economy", economyPanel, new Color(255, 255, 219));
     }
 
     /**
@@ -265,7 +259,7 @@ public class Run {
         // some stuff may happen here
 
         if(playEcon.deficit <= -100 || playEcon.Health <= 0) { // if the while loop finished because of the deficit, tell the player they lost
-            JOptionPane.showMessageDialog(win.getFrame(),"You lost");
+            JOptionPane.showMessageDialog(win,"You lost");
         }
     }
 

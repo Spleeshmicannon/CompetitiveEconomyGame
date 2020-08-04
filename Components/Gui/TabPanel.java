@@ -1,6 +1,7 @@
 package Components.Gui;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ public class TabPanel extends JPanel {
 
         this.setLayout(null);
         this.isDoubleBuffered();
+        this.setBackground(new Color(81, 80, 66));
 
         componentList = new ArrayList<>();
     }

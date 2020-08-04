@@ -66,13 +66,16 @@ public class PieChart extends JComponent {
         }
 
         final Rectangle area = getBounds();
+
+        g.fillOval(area.x - 5, area.y - 5, (area.width)/4 + 10, (area.height)/4 + 10);
+
         int curValue = 0;
         for(HashMap.Entry<Color, Double> entry : slices.entrySet()){
             int startAngle = (int) (curValue * 360 / totalSize);
-            int arcAngle = (int) (entry.getValue() * 360 / 100);
+            int arcAngle = (int) (entry.getValue() * 360 / totalSize);
 
             g.setColor(entry.getKey());
-            g.fillArc(area.x, area.y, area.width, area.height, startAngle, arcAngle);
+            g.fillArc(area.x,area.y,area.width/slices.size(),area.height/slices.size(), startAngle, arcAngle);
 
             curValue += entry.getValue();
         };

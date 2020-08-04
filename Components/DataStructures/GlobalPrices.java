@@ -1,5 +1,7 @@
 package Components.DataStructures;
 
+import Components.DataStructures.Enums.Resource;
+
 import java.util.HashMap;
 import java.util.Random;
 

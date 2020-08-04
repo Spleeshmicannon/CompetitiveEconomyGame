@@ -1,6 +1,6 @@
 package Components.DataStructures;
 
-import Components.DataStructures.Resource;
+import Components.DataStructures.Enums.Resource;
 
 public class Trade {
     public int amount;

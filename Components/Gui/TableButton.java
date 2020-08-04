@@ -36,6 +36,7 @@ public class TableButton {
         public Editor(JCheckBox checkBox, ActionListener ac) {
             super(checkBox);
             button = new JButton();
+            button.setBackground(new Color(240, 240, 210));
             button.addActionListener(ac);
             button.addActionListener(e -> fireEditingStopped());
         }

@@ -1,5 +1,8 @@
 package Components.DataStructures;
 
+import Components.DataStructures.Enums.Resource;
+import Components.DataStructures.Enums.SocialClass;
+
 import java.util.HashMap;
 
 public class Economy {
