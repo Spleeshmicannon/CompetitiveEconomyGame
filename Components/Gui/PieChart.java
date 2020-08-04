@@ -90,4 +90,9 @@ public class PieChart extends JComponent {
             curValue += entry.getValue();
         };
     }
+
+    public void repaint() {
+        removeAll();
+        paint(this.getGraphics());
+    }
 }

@@ -24,7 +24,10 @@ public class Run {
     static JLabel[] labels; // the text labels
     static JTable table; // the table with the data
 
-    static PieChart governmentChart;
+    static TabPanel politicsPanel;
+    static TabPanel economyPanel;
+    static TabPanel militaryPanel;
+    static TabPanel productionPanel;
 
     final static int WIDTH = 1080; // the windows width
     final static int HEIGHT = 720; // the windows height
@@ -225,8 +228,8 @@ public class Run {
     public static void initTabMenu() {
         win.setupTabMenu(WIDTH / 2 - 50, 140, 550, 500);
 
-        TabPanel politicsPanel = new TabPanel();
-        governmentChart = new PieChart(Map.of(
+        politicsPanel = new TabPanel();
+        PieChart governmentChart = new PieChart(Map.of(
                 SocialClass.classToColor(SocialClass.Proletariat), playEcon.getPeopleInClass(SocialClass.Proletariat),
                 SocialClass.classToColor(SocialClass.Aristocrat), playEcon.getPeopleInClass(SocialClass.Aristocrat),
                 SocialClass.classToColor(SocialClass.Royalty), playEcon.getPeopleInClass(SocialClass.Royalty)
@@ -239,9 +242,9 @@ public class Run {
             governmentChart
         );
 
-        TabPanel productionPanel = new TabPanel();
-        TabPanel militaryPanel = new TabPanel();
-        TabPanel economyPanel = new TabPanel();
+        productionPanel = new TabPanel();
+        militaryPanel = new TabPanel();
+        economyPanel = new TabPanel();
 
 
         win.addPane("Politics", politicsPanel, new Color(255, 255, 219));
@@ -283,11 +286,18 @@ public class Run {
         labels[6].setText("Proletariat:" + playEcon.getPeopleInClass(SocialClass.Proletariat)); // update the proletariat variable
 
         // updating the pie chart - this doesn't really work at the moment
-        governmentChart.changeSliceValue(SocialClass.classToColor(SocialClass.Proletariat), playEcon.getPeopleInClass(SocialClass.Proletariat));
-        governmentChart.changeSliceValue(SocialClass.classToColor(SocialClass.Aristocrat), playEcon.getPeopleInClass(SocialClass.Aristocrat));
-        governmentChart.changeSliceValue(SocialClass.classToColor(SocialClass.Royalty), playEcon.getPeopleInClass(SocialClass.Royalty));
+        PieChart governmentChart = new PieChart(Map.of(
+                SocialClass.classToColor(SocialClass.Proletariat), playEcon.getPeopleInClass(SocialClass.Proletariat),
+                SocialClass.classToColor(SocialClass.Aristocrat), playEcon.getPeopleInClass(SocialClass.Aristocrat),
+                SocialClass.classToColor(SocialClass.Royalty), playEcon.getPeopleInClass(SocialClass.Royalty)
+        ));
+
+        governmentChart.setBounds(10, 20, 500, 500);
         governmentChart.finaliseSize();
-        governmentChart.repaint();
+
+        politicsPanel.remove(0);
+        politicsPanel.updateUI();
+        politicsPanel.add(governmentChart);
 
         TableModel tableModel = table.getModel(); // makes an editable table model
         int temp;
