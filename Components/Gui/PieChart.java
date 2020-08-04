@@ -67,7 +67,7 @@ public class PieChart extends JComponent {
 
         final Rectangle area = getBounds();
 
-        g.fillOval(area.x - 5, area.y - 5, (area.width)/4 + 10, (area.height)/4 + 10);
+        g.fillOval(area.x - slices.size(), area.y - slices.size(), (area.width)/slices.size() + slices.size()*2, (area.height)/slices.size() + slices.size()*2);
 
         int curValue = 0;
         for(HashMap.Entry<Color, Double> entry : slices.entrySet()){
