@@ -1,4 +1,4 @@
-package Components.DataStructures;
+package Components.DataStructures.Enums;
 
 import java.util.Random;
 

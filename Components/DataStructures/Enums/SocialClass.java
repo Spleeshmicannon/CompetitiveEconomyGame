@@ -1,4 +1,4 @@
-package Components.DataStructures;
+package Components.DataStructures.Enums;
 
 public enum SocialClass {
     Royalty,
