@@ -6,19 +6,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PieChart extends JComponent {
-    HashMap<Color, Double> slices;
-    private Double totalSize;
+    HashMap<Color, Integer> slices;
+    private int totalSize;
 
     /**
      * Initialises the object with default values.
      * @param map the slices of the pie chart
      */
-    public PieChart(Map<Color, Double> map) {
+    public PieChart(Map<Color, Integer> map) {
         super();
         this.isDoubleBuffered();
 
-        this.slices = new HashMap<Color, Double>();
-        for(HashMap.Entry<Color, Double> slice : map.entrySet()) {
+        totalSize = 0;
+        this.slices = new HashMap<Color, Integer>();
+        for(HashMap.Entry<Color, Integer> slice : map.entrySet()) {
             this.slices.put(slice.getKey(), slice.getValue());
         }
     }
@@ -29,7 +30,7 @@ public class PieChart extends JComponent {
     public PieChart() {
         super();
         this.isDoubleBuffered();
-        slices = new HashMap<Color, Double>();
+        slices = new HashMap<Color, Integer>();
     }
 
 
@@ -37,8 +38,18 @@ public class PieChart extends JComponent {
      * Add a slice to the pie.
      * @param slice the slice
      */
-    public void addSlice(HashMap.Entry<Color, Double> slice) {
+    public void addSlice(HashMap.Entry<Color, Integer> slice) {
         slices.put(slice.getKey(), slice.getValue());
+    }
+
+
+    /**
+     * Change a slices size.
+     * @param key the slice color
+     * @param value the slice size
+     */
+    public void changeSliceValue(Color key, int value) {
+        slices.replace(key, value);
     }
 
     /**
@@ -54,14 +65,13 @@ public class PieChart extends JComponent {
      * the paint method runs.
      */
     public void finaliseSize() {
-        totalSize = 0.0D;
-        for(Double value : slices.values()) {
+        for(Integer value : slices.values()) {
             totalSize += value;
         }
     }
 
     public void paint(Graphics g) {
-        if(totalSize == null) {
+        if(totalSize == 0) {
             finaliseSize();
         }
 
@@ -70,7 +80,7 @@ public class PieChart extends JComponent {
         g.fillOval(area.x - slices.size(), area.y - slices.size(), (area.width)/slices.size() + slices.size()*2, (area.height)/slices.size() + slices.size()*2);
 
         int curValue = 0;
-        for(HashMap.Entry<Color, Double> entry : slices.entrySet()){
+        for(HashMap.Entry<Color, Integer> entry : slices.entrySet()){
             int startAngle = (int) (curValue * 360 / totalSize);
             int arcAngle = (int) (entry.getValue() * 360 / totalSize);
 

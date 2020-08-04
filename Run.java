@@ -14,12 +14,18 @@ import java.util.Random;
 
 public class Run {
     static Gui win; // the window object
+
     static Economy playEcon; // the players economy
+    static GlobalPrices globalPrices; // the HashMap of global prices
+
     static Boolean Online; // are you playing online?
     static Network net; // the network object for online play
+
     static JLabel[] labels; // the text labels
     static JTable table; // the table with the data
-    static GlobalPrices globalPrices; // the HashMap of global prices
+
+    static PieChart governmentChart;
+
     final static int WIDTH = 1080; // the windows width
     final static int HEIGHT = 720; // the windows height
 
@@ -220,11 +226,10 @@ public class Run {
         win.setupTabMenu(WIDTH / 2 - 50, 140, 550, 500);
 
         TabPanel politicsPanel = new TabPanel();
-        PieChart governmentChart = new PieChart(Map.of(
-                new Color(65, 85, 128), 50D,
-                new Color(73, 127, 67), 20D,
-                new Color(76, 130, 134), 5D,
-                new Color(142, 64, 60), 25D
+        governmentChart = new PieChart(Map.of(
+                SocialClass.classToColor(SocialClass.Proletariat), playEcon.getPeopleInClass(SocialClass.Proletariat),
+                SocialClass.classToColor(SocialClass.Aristocrat), playEcon.getPeopleInClass(SocialClass.Aristocrat),
+                SocialClass.classToColor(SocialClass.Royalty), playEcon.getPeopleInClass(SocialClass.Royalty)
         ));
 
         governmentChart.setBounds(10, 20, 500, 500);
@@ -269,6 +274,7 @@ public class Run {
      */
     public static void RefreshGui() {
 
+        // updating various Labels/text
         labels[1].setText("Deficit:" + playEcon.deficit); // updates Deficit variable
         labels[2].setText("Reliability:" + playEcon.reliability); // updates the reliability variable
         labels[3].setText("Health:" + playEcon.Health); // updates the health variable
@@ -276,6 +282,12 @@ public class Run {
         labels[5].setText("Aristocracy:" + playEcon.getPeopleInClass(SocialClass.Aristocrat)); // updates the aristocracy variable
         labels[6].setText("Proletariat:" + playEcon.getPeopleInClass(SocialClass.Proletariat)); // update the proletariat variable
 
+        // updating the pie chart - this doesn't really work at the moment
+        governmentChart.changeSliceValue(SocialClass.classToColor(SocialClass.Proletariat), playEcon.getPeopleInClass(SocialClass.Proletariat));
+        governmentChart.changeSliceValue(SocialClass.classToColor(SocialClass.Aristocrat), playEcon.getPeopleInClass(SocialClass.Aristocrat));
+        governmentChart.changeSliceValue(SocialClass.classToColor(SocialClass.Royalty), playEcon.getPeopleInClass(SocialClass.Royalty));
+        governmentChart.finaliseSize();
+        governmentChart.repaint();
 
         TableModel tableModel = table.getModel(); // makes an editable table model
         int temp;
