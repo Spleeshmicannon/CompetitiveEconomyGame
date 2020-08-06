@@ -87,6 +87,7 @@ public class Gui extends JFrame{
      * @param y the buttons y location
      * @param width the buttons width
      * @param height the buttons height
+     * @param ac the actionListener for the button
      * @return the button
      */
     public static JButton CreateButton(String text, int x, int y, int width, int height, ActionListener ac) {
@@ -94,6 +95,22 @@ public class Gui extends JFrame{
         btn.setBounds(x,y,width,height);
         btn.setBackground(new Color(240, 240, 210));
         btn.addActionListener(ac);
+        return btn;
+    }
+
+    /**
+     * Creates a Button
+     * @param text the button text
+     * @param x the buttons x location
+     * @param y the buttons y location
+     * @param width the buttons width
+     * @param height the buttons height
+     * @return the button
+     */
+    public static JButton CreateButton(String text, int x, int y, int width, int height) {
+        JButton btn = new JButton(text);
+        btn.setBounds(x,y,width,height);
+        btn.setBackground(new Color(240, 240, 210));
         return btn;
     }
 
