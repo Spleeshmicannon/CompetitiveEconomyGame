@@ -1,5 +1,6 @@
 package MainProcedures;
 
+import Components.Data.letters;
 import Components.DataStructures.Enums.Country;
 import Components.DataStructures.Enums.Resource;
 import Components.DataStructures.Enums.SocialClass;
@@ -30,6 +31,7 @@ public class MainGame {
     static TabPanel economyPanel;
     static TabPanel militaryPanel;
     static TabPanel productionPanel;
+    static TabPanel lettersPanel;
 
     final static int WIDTH = 1080; // the windows width
     final static int HEIGHT = 720; // the windows height
@@ -268,10 +270,19 @@ public class MainGame {
                 Gui.CreateText("Economy", 10, -130, 100, 300, 30)
         );
 
+        lettersPanel = new TabPanel();
+
+        Random rand = new Random();
+
+        for(int i = 0; i < 40; ++i) {
+            lettersPanel.add(Gui.CreateText(letters.getRandomText(), rand.nextInt(10), rand.nextInt(500) - 300, 1000, 500, rand.nextInt(30) + 10));
+        }
+
         win.addPane("Politics", politicsPanel, new Color(255, 255, 219));
         win.addPane("Production", productionPanel, new Color(255, 255, 219));
         win.addPane("Military", militaryPanel, new Color(255, 255, 219));
         win.addPane("Local Economy", economyPanel, new Color(255, 255, 219));
+        win.addPane("Letters", lettersPanel, new Color(255,255, 219));
     }
 
     /**
@@ -324,6 +335,15 @@ public class MainGame {
         productionPanel.updateUI();
         militaryPanel.updateUI();
         economyPanel.updateUI();
+
+        // updating the letter panel
+        lettersPanel.removeAll();
+
+        Random rand = new Random();
+
+        for(int i = 0; i < 40; ++i) {
+            lettersPanel.add(Gui.CreateText(letters.getRandomText(), rand.nextInt(10), rand.nextInt(500) - 300, 1000, 500, rand.nextInt(30) + 10));
+        }
 
         TableModel tableModel = table.getModel(); // makes an editable table model
         int temp;
