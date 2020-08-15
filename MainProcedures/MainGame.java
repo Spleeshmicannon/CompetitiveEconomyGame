@@ -46,7 +46,8 @@ public class MainGame {
         CreateEconomy(); // initialises the economy
         SetupGlobalMarket(); // initialises the prices of resources
         CreateGui(); // initialises the gui
-        new Thread(MainGame::CycleEconomy).start(); // the main loop running in a thread - this is not yet required
+        CycleEconomy(); // cycles the economy
+        endSequence(); // the final sequence in the game
     }
 
     /**
@@ -368,6 +369,23 @@ public class MainGame {
 
         // assigning model with updated values to the table
         table.setModel(tableModel);
+    }
+
+    /**
+     * Meant to be a little text box with "Dear Ms President, " and allows you
+     * to type a message before closing. Can't get anything to work though.
+     */
+    public static void endSequence() {
+        win.removeAll();
+        win.setBackground(new Color(60, 60, 30));
+
+        JLabel text = new JLabel();
+        text.setText("Dear Ms President, ");
+        text.setBounds(WIDTH/32, 160, 500, 100);
+        win.add(text);
+
+        win.clearScreen();
+        win.showScreen();
     }
 
     /**
