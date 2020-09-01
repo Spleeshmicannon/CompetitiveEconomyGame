@@ -109,18 +109,22 @@ public class Economy {
      * The periodic changes to the economy
      */
     public void CycleEconomy() {
-        for(HashMap.Entry<Resource, Integer> entry : needs.entrySet()) {
+
+        int aristocratCoefficient = (int) (0.01 * people.get(SocialClass.Aristocrat));
+        int proletariatCoefficient = (int) (0.01 * people.get(SocialClass.Proletariat));
+
+        for (HashMap.Entry<Resource, Integer> entry : needs.entrySet()) {
             int temp;
-            if((temp = entry.getValue()) != -1) {
+            if ((temp = entry.getValue()) != -1) {
                 entry.setValue(temp + 1);
             }
         }
 
-        for(HashMap.Entry<Resource, Integer> entry : products.entrySet()) {
+        for (HashMap.Entry<Resource, Integer> entry : products.entrySet()) {
             int temp;
-            if((temp = entry.getValue()) != -1) {
+            if ((temp = entry.getValue()) != -1) {
                 entry.setValue(temp + 1);
-                if(SocialClass.resourceToClass(entry.getKey()) == SocialClass.Aristocrat) {
+                if (SocialClass.resourceToClass(entry.getKey()) == SocialClass.Aristocrat) {
                     people.replace(SocialClass.Aristocrat, people.get(SocialClass.Aristocrat) + 1);
                 } else if (SocialClass.resourceToClass(entry.getKey()) == SocialClass.Proletariat) {
                     people.replace(SocialClass.Proletariat, people.get(SocialClass.Proletariat) + 1);
@@ -128,18 +132,44 @@ public class Economy {
             }
         }
 
-        if(needs.get(Resource.food) != -1) {
-            if(needs.get(Resource.food) > people.get(SocialClass.Royalty)*100) {
-                Health -= (people.get(SocialClass.Proletariat)/100) - 1;
-                people.replace(SocialClass.Proletariat, people.get(SocialClass.Proletariat) - 1);
+        if (needs.get(Resource.food) != -1) {
+            if (needs.get(Resource.food) > people.get(SocialClass.Royalty) * 100) {
+                if (aristocratCoefficient > 0) {
+                    Health -= aristocratCoefficient;
+                    people.replace(SocialClass.Proletariat, people.get(SocialClass.Proletariat) - ((int) (0.01 * (people.get(SocialClass.Proletariat))) + 1));
+                }
             }
-        } else {
-            if(needs.get(Resource.medicine) > people.get(SocialClass.Royalty)*100) {
-                Health -= (people.get(SocialClass.Aristocrat)/10) - 1;
-                people.replace(SocialClass.Aristocrat, people.get(SocialClass.Aristocrat) - 1);
+        }
+
+        if (needs.get(Resource.medicine) != -1) {
+            if (needs.get(Resource.medicine) > people.get(SocialClass.Royalty) * 100) {
+                if (proletariatCoefficient > 0) {
+                    Health -= proletariatCoefficient;
+                    people.replace(SocialClass.Aristocrat, people.get(SocialClass.Aristocrat) - ((int) (0.01 * (people.get(SocialClass.Aristocrat))) + 1));
+                }
+            }
+
+        }
+
+        if (needs.get(Resource.minerals) != -1) {
+            if (needs.get(Resource.minerals) > people.get(SocialClass.Royalty) * 100) {
+                if (proletariatCoefficient > 0) {
+                    Health -= proletariatCoefficient;
+                    people.replace(SocialClass.Aristocrat, people.get(SocialClass.Aristocrat) - ((int) (0.01 * (people.get(SocialClass.Aristocrat))) + 1));
+                }
+            }
+        }
+
+        if (needs.get(Resource.technology) != -1) {
+            if (needs.get(Resource.technology) > people.get(SocialClass.Royalty) * 100) {
+                if (proletariatCoefficient > 0) {
+                    Health -= proletariatCoefficient;
+                    people.replace(SocialClass.Aristocrat, people.get(SocialClass.Aristocrat) - ((int) (0.01 * (people.get(SocialClass.Aristocrat))) + 1));
+                }
             }
         }
     }
+
 
     /**
      * Buying up everything the economy needs of said Resource.
@@ -170,10 +200,28 @@ public class Economy {
     }
 
     /**
-     * Spend 100 dollars on an advertising campaign and increase reliability by 10.
+     * Spend an exponentially increasing amount to get an advertisement campaign to increase reliability by 10
+     * (increasing the sell price of created products).
      */
     public void AdCampaign() {
-        deficit -= 100;
-        reliability += 10;
+
+        if (reliability < 1000) {
+            if (reliability < 100) {
+                System.out.println(Math.round((1 + 0.01 * Math.pow(reliability, 1.1)) * 10) * 10);
+                deficit -= Math.round((1 + 0.01 * Math.pow(reliability, 1.1)) * 10) * 10;
+
+            } else if (reliability >= 100 & reliability < 250) {
+                System.out.println(Math.round((1 + 0.01 * (Math.pow(100, 1.1) + Math.pow(reliability-100, 1.2)) * 10)) * 10);
+                deficit -= Math.round((1 + 0.01 * (Math.pow(100, 1.1) + Math.pow(reliability-100, 1.2)) * 10)) * 10;
+
+            } else {
+                System.out.println(Math.round((1 + 0.01 * (Math.pow(100, 1.1) + Math.pow(150, 1.2) + Math.pow(reliability-250, 1.3)) * 10)) * 10);
+                deficit -= Math.round((1 + 0.01 * (Math.pow(100, 1.1) + Math.pow(150, 1.2) + Math.pow(reliability-250, 1.3)) * 10)) * 10;
+
+            }
+
+            reliability += 10;
+        }
+
     }
 }

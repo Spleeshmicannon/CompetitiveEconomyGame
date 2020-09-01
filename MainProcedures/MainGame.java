@@ -12,6 +12,8 @@ import javax.swing.*;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -35,6 +37,8 @@ public class MainGame {
 
     final static int WIDTH = 1080; // the windows width
     final static int HEIGHT = 720; // the windows height
+
+    static ArrayList<Integer> letterYValues = new ArrayList<Integer>();
 
     /**
      * If you want to just start the game but not go through a main menu,
@@ -238,6 +242,7 @@ public class MainGame {
     public static void initTabMenu() {
         win.setupTabMenu(WIDTH / 2 - 50, 140, 550, 500);
 
+        letterYValues.clear();
         politicsPanel = new TabPanel();
 
         PieChart governmentChart = new PieChart(Map.of(
@@ -275,22 +280,31 @@ public class MainGame {
 
         Random rand = new Random();
 
-        for(int i = 0; i < 40; ++i) {
-            lettersPanel.add(Gui.CreateText(letters.getRandomText(), rand.nextInt(10), rand.nextInt(500) - 300, 1000, 500, rand.nextInt(30) + 10));
-        }
+        for(int i = 0; i < 12; ++i) {
+            int yValue = (rand.nextInt(12)-6)*40;
+            System.out.print("1. " + letterYValues);
+            System.out.println("2. " + yValue);
 
-        win.addPane("Politics", politicsPanel, new Color(255, 255, 219));
-        win.addPane("Production", productionPanel, new Color(255, 255, 219));
-        win.addPane("Military", militaryPanel, new Color(255, 255, 219));
-        win.addPane("Local Economy", economyPanel, new Color(255, 255, 219));
-        win.addPane("Letters", lettersPanel, new Color(255,255, 219));
+
+            if (!letterYValues.contains(yValue)) {
+                lettersPanel.add(Gui.CreateText(letters.getRandomText(), rand.nextInt(4)*10, yValue, 1000, 500, 14));
+                letterYValues.add(letterYValues.size(), yValue);
+            }
+        }
+        Color panelColor = new Color(255, 255, 219);
+
+        win.addPane("Politics", politicsPanel, panelColor);
+        win.addPane("Production", productionPanel, panelColor);
+        win.addPane("Military", militaryPanel, panelColor);
+        win.addPane("Local Economy", economyPanel, panelColor);
+        win.addPane("Letters", lettersPanel, panelColor);
     }
 
     /**
      * Cycles through the economy once every second.
      */
     public static void CycleEconomy() {
-        while(playEcon.deficit >= -100 || playEcon.Health <= 0) {
+        while(playEcon.deficit >= -100 || playEcon.Health > 0) {
             sleep(1000); // sleep for one second
             playEcon.CycleEconomy(); // cycles through the economy (i.e. changing various values)
             globalPrices.CyclePrices(); // changes the prices incrementally and randomly
@@ -309,6 +323,8 @@ public class MainGame {
      * Refreshes the GUI with new variable values.
      */
     public static void RefreshGui() {
+
+        letterYValues.clear();
 
         // updating various Labels/text
         labels[1].setText("Deficit:" + playEcon.deficit); // updates Deficit variable
@@ -342,8 +358,13 @@ public class MainGame {
 
         Random rand = new Random();
 
-        for(int i = 0; i < 40; ++i) {
-            lettersPanel.add(Gui.CreateText(letters.getRandomText(), rand.nextInt(10), rand.nextInt(500) - 300, 1000, 500, rand.nextInt(30) + 10));
+        for(int i = 0; i < 12; ++i) {
+            int yValue = (rand.nextInt(12) - 6) * 40;
+
+            if (!letterYValues.contains(yValue)) {
+                lettersPanel.add(Gui.CreateText(letters.getRandomText(), rand.nextInt(4) * 10, yValue, 1000, 500, 14));
+                letterYValues.add(letterYValues.size(), yValue);
+            }
         }
 
         TableModel tableModel = table.getModel(); // makes an editable table model
