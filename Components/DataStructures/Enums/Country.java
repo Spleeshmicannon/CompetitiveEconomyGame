@@ -3,6 +3,8 @@ package Components.DataStructures.Enums;
 import java.util.Random;
 
 public enum Country {
+
+    // All playable countries
     britishEmpire,
     mingDynasty,
     sovietUnion,

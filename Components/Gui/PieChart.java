@@ -70,6 +70,10 @@ public class PieChart extends JComponent {
         }
     }
 
+    /**
+     * Creates the graphic for the pie chart
+     * @param g the pie chart to draw
+     */
     public void paint(Graphics g) {
         if(totalSize == 0) {
             finaliseSize();
@@ -77,8 +81,10 @@ public class PieChart extends JComponent {
 
         final Rectangle area = getBounds();
 
+        // Initialise the pie chart given the slices
         g.fillOval(area.x - slices.size(), area.y - slices.size(), (area.width)/slices.size() + slices.size()*2, (area.height)/slices.size() + slices.size()*2);
 
+        // Color the given slices into the pie chart
         int curValue = 0;
         for(HashMap.Entry<Color, Integer> entry : slices.entrySet()){
             int startAngle = (int) (curValue * 360 / totalSize);
@@ -91,6 +97,9 @@ public class PieChart extends JComponent {
         };
     }
 
+    /**
+     * Repaints all graphics
+     */
     public void repaint() {
         removeAll();
         paint(this.getGraphics());

@@ -2,8 +2,10 @@ package MainProcedures;
 
 import Components.Data.letters;
 import Components.DataStructures.Enums.Country;
+import Components.DataStructures.Enums.CreditRating;
 import Components.DataStructures.Enums.Resource;
 import Components.DataStructures.Enums.SocialClass;
+import Components.DataStructures.Enums.CreditRating;
 import Components.Network;
 import Components.DataStructures.*;
 import Components.Gui.*;
@@ -12,8 +14,7 @@ import javax.swing.*;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class MainGame {
     static Gui win; // the window object
@@ -27,14 +28,26 @@ public class MainGame {
     static JLabel[] labels; // the text labels
     static JTable table; // the table with the data
 
-    static TabPanel politicsPanel;
-    static TabPanel economyPanel;
-    static TabPanel militaryPanel;
-    static TabPanel productionPanel;
-    static TabPanel lettersPanel;
+    // The panels for the GUI to be displayed
+    static TabPanel politicsPanel = new TabPanel(); //TODO  SPLIT INTO LOCAL AND INTERNATIONAL
+    static TabPanel economyPanel = new TabPanel();
+    static TabPanel militaryPanel = new TabPanel();
+    static TabPanel productionPanel = new TabPanel();
+    static TabPanel educationPanel = new TabPanel();
+    static TabPanel sciencePanel = new TabPanel();
+    static TabPanel lettersPanel = new TabPanel();
+
+    static TabPanel localPoliticsPanel = new TabPanel();
+    static TabPanel intPoliticsPanel = new TabPanel();
+
+    static HashMap<TabPanel, String> panelList = new HashMap<TabPanel, String>(); // initialises the HashMap for the above panels
 
     final static int WIDTH = 1080; // the windows width
     final static int HEIGHT = 720; // the windows height
+
+    static CreditRating credit = CreditRating.AAA; // Initiates the country's credit rating
+
+    static ArrayList<Integer> letterYValues = new ArrayList<Integer>(); // Initiates the list of co-ordinates for messages in letter tab
 
     /**
      * If you want to just start the game but not go through a main menu,
@@ -42,6 +55,16 @@ public class MainGame {
      * @param args command line arguments
      */
     public static void main(String[] args) {
+
+        // adds the given panels to the HashMap to be looped through when required
+        panelList.put(politicsPanel, "Politics");
+        panelList.put(economyPanel, "Economy");
+        panelList.put(militaryPanel, "Military");
+        panelList.put(productionPanel, "Production");
+        panelList.put(educationPanel, "Education");
+        panelList.put(sciencePanel, "Science");
+        panelList.put(lettersPanel, "Letters");
+
         Online = false; // online is set to false by default
         CreateEconomy(); // initialises the economy
         SetupGlobalMarket(); // initialises the prices of resources
@@ -126,6 +149,33 @@ public class MainGame {
         globalPrices.setGlobalPrices();
     }
 
+    public static void buyOrSell(Resource r) {
+
+        if(playEcon.getNeeds().get(r) != -1) {
+            globalPrices.incrementPrice(r, playEcon.getNeeds().get(r));
+            playEcon.BuyNeeds(globalPrices.getGlobalPrices(r), r);
+        } else {
+            globalPrices.incrementPrice(r, playEcon.getProducts().get(r)*-1);
+            playEcon.SellProducts(globalPrices.getGlobalPrices(r), r);
+        }
+    }
+
+    public static Object[] initResource(Resource r) {
+
+        int temp;
+        Object[] initialisation;
+        initialisation = new Object[]
+                {
+                    r.toString(),
+                    "Buy/Sell",
+                    (temp = playEcon.getNeeds().get(r)) == -1 ? "" : temp,
+                    (temp = playEcon.getProducts().get(r)) == -1 ? "" : temp,
+                    globalPrices.getGlobalPrices(r)
+                };
+
+        return initialisation;
+    }
+
     /**
      * Initialises the table.
      */
@@ -146,33 +196,12 @@ public class MainGame {
      */
     public static void initTable() {
         // creates the JTable, complete with data and column headings.
-        int temp;
+
         table = new JTable(new Object[][]{
-        {
-                "Food",
-                "Buy/Sell",
-                (temp = playEcon.getNeeds().get(Resource.food)) == -1 ? "" : temp ,
-                (temp = playEcon.getProducts().get(Resource.food)) == -1 ? "" : temp,
-                globalPrices.getGlobalPrices(Resource.food)
-        }, {
-                "Minerals",
-                "Buy/Sell",
-                (temp = playEcon.getNeeds().get(Resource.minerals)) == -1 ? "" : temp ,
-                (temp = playEcon.getProducts().get(Resource.minerals)) == -1 ? "" : temp,
-                globalPrices.getGlobalPrices(Resource.minerals)
-        }, {
-                "Technology",
-                "Buy/Sell",
-                (temp = playEcon.getNeeds().get(Resource.technology)) == -1 ? "" : temp ,
-                (temp = playEcon.getProducts().get(Resource.technology)) == -1 ? "" : temp,
-                globalPrices.getGlobalPrices(Resource.technology)
-        }, {
-                "Medicine",
-                "Buy/Sell",
-                (temp = playEcon.getNeeds().get(Resource.medicine)) == -1 ? "" : temp ,
-                (temp = playEcon.getProducts().get(Resource.medicine)) == -1 ? "" : temp,
-                globalPrices.getGlobalPrices(Resource.medicine)
-        }
+                initResource(Resource.food),
+                initResource(Resource.minerals),
+                initResource(Resource.technology),
+                initResource(Resource.medicine)
         }, new String[]{" ", "Buy/Sell", "Needs", "Products", "Prices"}
         );
 
@@ -186,45 +215,26 @@ public class MainGame {
         table.getColumn("Needs").setCellRenderer(new CustomTableColor.Renderer());
         table.getColumn("Products").setCellRenderer(new CustomTableColor.Renderer());
         table.getColumn("Prices").setCellRenderer(new CustomTableColor.Renderer());
+
         TableButton.Editor editor = new TableButton.Editor(new JCheckBox(), e -> { }); // a placeholder editor values
         editor.addActionListner(e -> { // adding an action listener with the editor.rowNumber variable
             switch(editor.rowNumber) { // based on the row, what the buttons do
                 case 0:
-                    if(playEcon.getNeeds().get(Resource.food) != -1) {
-                        globalPrices.incrementPrice(Resource.food, playEcon.getNeeds().get(Resource.food));
-                        playEcon.BuyNeeds(globalPrices.getGlobalPrices(Resource.food), Resource.food);
-                    } else {
-                        globalPrices.incrementPrice(Resource.food, playEcon.getProducts().get(Resource.food)*-1);
-                        playEcon.SellProducts(globalPrices.getGlobalPrices(Resource.food), Resource.food);
-                    }
+                    buyOrSell(Resource.food);
                     break;
+
                 case 1:
-                    if(playEcon.getNeeds().get(Resource.minerals) != -1) {
-                        globalPrices.incrementPrice(Resource.minerals, playEcon.getNeeds().get(Resource.minerals));
-                        playEcon.BuyNeeds(globalPrices.getGlobalPrices(Resource.minerals), Resource.minerals);
-                    } else {
-                        globalPrices.incrementPrice(Resource.minerals, playEcon.getProducts().get(Resource.minerals)*-1);
-                        playEcon.SellProducts(globalPrices.getGlobalPrices(Resource.minerals), Resource.minerals);
-                    }
+                    buyOrSell(Resource.minerals);
                     break;
+
                 case 2:
-                    if(playEcon.getNeeds().get(Resource.technology) != -1) {
-                        globalPrices.incrementPrice(Resource.technology, playEcon.getNeeds().get(Resource.technology));
-                        playEcon.BuyNeeds(globalPrices.getGlobalPrices(Resource.technology), Resource.technology);
-                    } else {
-                        globalPrices.incrementPrice(Resource.technology, playEcon.getProducts().get(Resource.technology)*-1);
-                        playEcon.SellProducts(globalPrices.getGlobalPrices(Resource.technology), Resource.technology);
-                    }
+                    buyOrSell(Resource.technology);
                     break;
+
                 case 3:
-                    if(playEcon.getNeeds().get(Resource.medicine) != -1) {
-                        globalPrices.incrementPrice(Resource.medicine, playEcon.getNeeds().get(Resource.medicine));
-                        playEcon.BuyNeeds(globalPrices.getGlobalPrices(Resource.medicine), Resource.medicine);
-                    } else {
-                        globalPrices.incrementPrice(Resource.medicine, playEcon.getProducts().get(Resource.medicine)*-1);
-                        playEcon.SellProducts(globalPrices.getGlobalPrices(Resource.medicine), Resource.medicine);
-                    }
+                    buyOrSell(Resource.medicine);
                     break;
+
                 default: break;
             }
             RefreshGui();
@@ -238,69 +248,61 @@ public class MainGame {
     public static void initTabMenu() {
         win.setupTabMenu(WIDTH / 2 - 50, 140, 550, 500);
 
-        politicsPanel = new TabPanel();
+        letterYValues.clear(); // Clears the record of y positions of letters
 
+        // Adds text titles for each panel
+        for (Map.Entry<TabPanel, String> panel : panelList.entrySet()) {
+            panel.getKey().addComponents(
+                    Gui.CreateText(panel.getValue(), 10, -130, 100, 300, 20));
+        }
+
+        // Creates the pie chart of current populations
         PieChart governmentChart = new PieChart(Map.of(
                 SocialClass.classToColor(SocialClass.Proletariat), playEcon.getPeopleInClass(SocialClass.Proletariat),
                 SocialClass.classToColor(SocialClass.Aristocrat), playEcon.getPeopleInClass(SocialClass.Aristocrat),
                 SocialClass.classToColor(SocialClass.Royalty), playEcon.getPeopleInClass(SocialClass.Royalty)
         ));
+
+        // adds the pie chart to the GUI
+        politicsPanel.add(governmentChart);
         governmentChart.setBounds(10, 20, 500, 500);
         governmentChart.finaliseSize();
 
-        politicsPanel.add(governmentChart);
-        politicsPanel.addComponents(
-                Gui.CreateText("Politics", 10, -130, 100, 300, 30)
-        );
-
-        productionPanel = new TabPanel();
-
-        productionPanel.addComponents(
-                Gui.CreateText("Production", 10, -130, 100, 300, 30)
-        );
-
-        militaryPanel = new TabPanel();
-
-        militaryPanel.addComponents(
-                Gui.CreateText("Military", 10, -130, 100, 300, 30)
-        );
-
-        economyPanel = new TabPanel();
-
-        economyPanel.addComponents(
-                Gui.CreateText("Economy", 10, -130, 100, 300, 30)
-        );
-
-        lettersPanel = new TabPanel();
-
+        // Sets up the letters pane with randomly place letters
         Random rand = new Random();
+        for(int i = 0; i < 12; ++i) {
 
-        for(int i = 0; i < 40; ++i) {
-            lettersPanel.add(Gui.CreateText(letters.getRandomText(), rand.nextInt(10), rand.nextInt(500) - 300, 1000, 500, rand.nextInt(30) + 10));
+            int yValue = (rand.nextInt(12)-6)*40;
+
+            if (!letterYValues.contains(yValue)) {
+                lettersPanel.add(Gui.CreateText(letters.getRandomText(), rand.nextInt(4)*10, yValue, 1000, 500, 14));
+                letterYValues.add(letterYValues.size(), yValue);
+            }
         }
 
-        win.addPane("Politics", politicsPanel, new Color(255, 255, 219));
-        win.addPane("Production", productionPanel, new Color(255, 255, 219));
-        win.addPane("Military", militaryPanel, new Color(255, 255, 219));
-        win.addPane("Local Economy", economyPanel, new Color(255, 255, 219));
-        win.addPane("Letters", lettersPanel, new Color(255,255, 219));
+        // Adds the given panels to the GUI to be displayed
+        Color panelColor = new Color(255, 255, 219);
+        for (Map.Entry<TabPanel, String> panel : panelList.entrySet()) {
+            win.addPane(panel.getValue(), panel.getKey(), panelColor);
+        }
     }
 
     /**
      * Cycles through the economy once every second.
      */
     public static void CycleEconomy() {
-        while(playEcon.deficit >= -100 || playEcon.Health <= 0) {
+        while(playEcon.deficit >= -1000 & playEcon.Health > 0) {
             sleep(1000); // sleep for one second
             playEcon.CycleEconomy(); // cycles through the economy (i.e. changing various values)
             globalPrices.CyclePrices(); // changes the prices incrementally and randomly
             RefreshGui(); // refreshing the GUI with the new values that were assigned
+
+            if(playEcon.deficit <= -1000 || playEcon.Health <= 0) { // if the while loop finished because of the deficit, tell the player they lost
+                JOptionPane.showMessageDialog(win,"You lost");
+                endSequence();
         }
 
         // some stuff may happen here
-
-        if(playEcon.deficit <= -100 || playEcon.Health <= 0) { // if the while loop finished because of the deficit, tell the player they lost
-            JOptionPane.showMessageDialog(win,"You lost");
         }
     }
 
@@ -309,6 +311,9 @@ public class MainGame {
      * Refreshes the GUI with new variable values.
      */
     public static void RefreshGui() {
+
+
+        letterYValues.clear(); // Clears the record of y positions of letters
 
         // updating various Labels/text
         labels[1].setText("Deficit:" + playEcon.deficit); // updates Deficit variable
@@ -325,25 +330,29 @@ public class MainGame {
                 SocialClass.classToColor(SocialClass.Royalty), playEcon.getPeopleInClass(SocialClass.Royalty)
         ));
 
+        // Re-initialising the politics panels
         governmentChart.setBounds(10, 20, 500, 500);
         governmentChart.finaliseSize();
 
         politicsPanel.remove(0); // breaks all other stuff in the gui
-        politicsPanel.updateUI();
         politicsPanel.add(governmentChart);
 
-        // updating other panels
-        productionPanel.updateUI();
-        militaryPanel.updateUI();
-        economyPanel.updateUI();
-
-        // updating the letter panel
+        // resetting and updating the letters panel
         lettersPanel.removeAll();
 
         Random rand = new Random();
+        for(int i = 0; i < 12; ++i) {
+            int yValue = (rand.nextInt(12) - 6) * 40;
 
-        for(int i = 0; i < 40; ++i) {
-            lettersPanel.add(Gui.CreateText(letters.getRandomText(), rand.nextInt(10), rand.nextInt(500) - 300, 1000, 500, rand.nextInt(30) + 10));
+            if (!letterYValues.contains(yValue)) {
+                lettersPanel.add(Gui.CreateText(letters.getRandomText(), rand.nextInt(4) * 10, yValue, 1000, 500, 14));
+                letterYValues.add(letterYValues.size(), yValue);
+            }
+        }
+
+        // updating all panels
+        for (Map.Entry<TabPanel, String> panel : panelList.entrySet()) {
+            panel.getKey().updateUI();
         }
 
         TableModel tableModel = table.getModel(); // makes an editable table model
@@ -376,16 +385,19 @@ public class MainGame {
      * to type a message before closing. Can't get anything to work though.
      */
     public static void endSequence() {
+
+        // Clears all objects from the screen
         win.removeAll();
         win.setBackground(new Color(60, 60, 30));
 
+        // Creates a final prompt to write a message for closing office
         JLabel text = new JLabel();
         text.setText("Dear Ms President, ");
         text.setBounds(WIDTH/32, 160, 500, 100);
-        win.add(text);
+        politicsPanel.add(text);
 
-        win.clearScreen();
-        win.showScreen();
+        // Exits Application
+        System.exit(0);
     }
 
     /**
