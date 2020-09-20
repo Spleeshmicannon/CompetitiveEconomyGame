@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.Vector;
 
 public class Gui extends JFrame{
-    private JTabbedPane tabMenu;
+    public JTabbedPane tabMenu;
     private ArrayMap<String> tabIndex;
 
     /**
@@ -24,7 +24,7 @@ public class Gui extends JFrame{
         this.setLayout(null);
         this.setSize(width, height);
         this.getContentPane().setBackground(new Color(88, 88, 61));
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     /**

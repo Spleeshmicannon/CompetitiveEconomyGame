@@ -3,10 +3,17 @@ package Components.DataStructures.Enums;
 import java.awt.*;
 
 public enum SocialClass {
+
+    // Classes
     Royalty,
     Aristocrat,
     Proletariat;
 
+    /**
+     * Retrieve the SocialClass in control of a given resource
+     * @param r the chosen resource
+     * @return the given SocialClass
+     */
     public static SocialClass resourceToClass(Resource r) {
         switch(r) {
             case food:
@@ -20,6 +27,11 @@ public enum SocialClass {
         }
     }
 
+    /**
+     * returns an RGB colour value representing the given SocialClass
+     * @param sc the given SocialClass
+     * @return an RGB colour value
+     */
     public static Color classToColor(SocialClass sc) {
         switch(sc) {
             case Proletariat: return new Color(142, 64, 60);

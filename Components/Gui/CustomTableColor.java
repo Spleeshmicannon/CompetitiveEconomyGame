@@ -6,9 +6,15 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
 public class CustomTableColor {
+
     public static class Renderer extends JTextPane implements TableCellRenderer {
+
+        /**
+         * Renders the given table with the desired colour values
+         */
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+
             setText(value.toString());
             setEditable(false);
             setBackground(new Color(60, 60, 44));
